@@ -10,20 +10,20 @@ import org.springframework.stereotype.Service;
 
 import com.project.usermanager.dto.request.user.UserRequestDTOPost;
 import com.project.usermanager.dto.request.user.UserRequestDTOPut;
-import com.project.usermanager.dto.response.UserResponseDTO;
+import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.mapper.UserMapper;
 import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.UserRepository;
-import com.project.usermanager.service.UserService;
+import com.project.usermanager.service.UserRegistryService;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class UserServiceImpl implements UserService {
+public class UserRegistryServiceImpl implements UserRegistryService {
 
     @Autowired
     private final UserRepository repository;
@@ -31,10 +31,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final UserMapper mapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserRegistryServiceImpl.class);
 
     @Override
-    public void createUser(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
+    public void createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
 
         logger.info("createUser - IN: {} ", requestDTO.toString());
 
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public UserResponseDTO findUser(String fiscalCode) throws NotFoundException {
+    public UserRegistryResponseDTO findUserRegistry(String fiscalCode) throws NotFoundException {
 
         logger.info("findUser - IN: fiscalCode({}) ", fiscalCode);
 
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("User not found!");
         }
         else {
-            UserResponseDTO responseDTO = mapper.toDTO(user.get());
+            UserRegistryResponseDTO responseDTO = mapper.toDTO(user.get());
 
             logger.info("findUser - OUT: {} ", responseDTO.toString());
             return responseDTO;
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void editUser(UserRequestDTOPut requestDTO, String fiscalCode) throws BadRequestException, NotFoundException {
+    public void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode) throws BadRequestException, NotFoundException {
 
         logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
         
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String fiscalCode) throws NotFoundException {
+    public void deleteUserRegistry(String fiscalCode) throws NotFoundException {
 
         logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
         
@@ -99,17 +99,17 @@ public class UserServiceImpl implements UserService {
         else {
             repository.delete(user.get());
 
-            logger.info("deleteUser - OUT: {} ", user.get());
+            logger.info("deleteUser - OUT: {}, {} ", user.get());
         }
     }
 
     @Override
-    public List<UserResponseDTO> findAll() {
+    public List<UserRegistryResponseDTO> findAllUserRegistry() {
 
         logger.info("findAll - IN: none ");
 
         List<UserEntity> userList = repository.findAll();
-        List<UserResponseDTO> responseDTOList = mapper.toDTOList(userList);
+        List<UserRegistryResponseDTO> responseDTOList = mapper.toDTOList(userList);
         
         logger.info("findAll - OUT: {} ", responseDTOList.toString());
         return responseDTOList;

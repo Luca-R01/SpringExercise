@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.project.usermanager.dto.request.user.UserRequestDTOPost;
 import com.project.usermanager.dto.request.user.UserRequestDTOPut;
-import com.project.usermanager.dto.response.UserResponseDTO;
+import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.model.UserEntity;
 
@@ -48,11 +48,11 @@ public class UserMapper {
     }
 
 
-    public UserResponseDTO toDTO(UserEntity user) {
+    public UserRegistryResponseDTO toDTO(UserEntity user) {
 
         logger.info("toDTO - IN: {}", user.toString());
 
-        UserResponseDTO responseDTO = new UserResponseDTO();
+        UserRegistryResponseDTO responseDTO = new UserRegistryResponseDTO();
         responseDTO.setAge(Period.between(user.getBirthDate(), LocalDate.now()).getYears());
         responseDTO.setEmail(user.getEmail());
         responseDTO.setBirthDate(user.getBirthDate());
@@ -66,11 +66,11 @@ public class UserMapper {
         return responseDTO;
     }
 
-    public List<UserResponseDTO> toDTOList(List<UserEntity> userList) {
+    public List<UserRegistryResponseDTO> toDTOList(List<UserEntity> userList) {
 
         logger.info("toDTOList - IN: {} ", userList.toString());
 
-        List<UserResponseDTO> responseDTOList = new ArrayList<>();
+        List<UserRegistryResponseDTO> responseDTOList = new ArrayList<>();
         for (UserEntity user : userList) {
             responseDTOList.add(this.toDTO(user));
         }

@@ -16,31 +16,31 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.project.usermanager.dto.request.user.UserRequestDTOPost;
 import com.project.usermanager.dto.request.user.UserRequestDTOPut;
-import com.project.usermanager.dto.response.UserResponseDTO;
+import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
 
-public interface UserController {
+public interface UserRegistryController {
     
-    @PostMapping("/api/user")
+    @PostMapping("/api/user/registry")
     @ResponseStatus(code = HttpStatus.CREATED, value = HttpStatus.CREATED)
-    void createUser(@RequestBody @Valid UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException;
+    void createUserRegistry(@RequestBody @Valid UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException;
 
-    @GetMapping("/api/user/{fiscalCode}")
+    @GetMapping("/api/user/registry/{fiscalCode}")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
-    ResponseEntity<UserResponseDTO> findUser(@PathVariable String fiscalCode) throws BadRequestException, ConflictException, NotFoundException;
+    ResponseEntity<UserRegistryResponseDTO> findUserRegistry(@PathVariable String fiscalCode) throws BadRequestException, ConflictException, NotFoundException;
 
-    @PutMapping("/api/user/{fiscalCode}")
+    @PutMapping("/api/user/registry/{fiscalCode}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT, value = HttpStatus.NO_CONTENT)
-    void editUser(@RequestBody @Valid UserRequestDTOPut requestDTO, @PathVariable String fiscalCode) throws BadRequestException, NotFoundException;
+    void editUserRegistry(@RequestBody @Valid UserRequestDTOPut requestDTO, @PathVariable String fiscalCode) throws BadRequestException, NotFoundException;
 
-    @DeleteMapping("/api/user/{fiscalCode}")
+    @DeleteMapping("/api/user/registry/{fiscalCode}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT, value = HttpStatus.NO_CONTENT)
-    void deleteUser(@PathVariable String fiscalCode) throws NotFoundException;
+    void deleteUserRegistry(@PathVariable String fiscalCode) throws NotFoundException;
 
-    @GetMapping("/api/user")
+    @GetMapping("/api/user/registry")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
-    ResponseEntity<List<UserResponseDTO>> findAll();
+    ResponseEntity<List<UserRegistryResponseDTO>> findAllUserRegistry();
 }
 

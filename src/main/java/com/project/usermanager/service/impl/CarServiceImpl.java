@@ -18,7 +18,7 @@ import com.project.usermanager.mapper.CarMapper;
 import com.project.usermanager.model.CarEntity;
 import com.project.usermanager.repository.CarRepository;
 import com.project.usermanager.service.CarService;
-import com.project.usermanager.service.UserService;
+import com.project.usermanager.service.UserRegistryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +33,7 @@ public class CarServiceImpl implements CarService {
     private final CarMapper mapper;
 
     @Autowired
-    private final UserService userService;
+    private final UserRegistryService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(CarServiceImpl.class);
 
@@ -49,7 +49,7 @@ public class CarServiceImpl implements CarService {
         }
         else {
             // Control if user with input FiscalCode exists
-            userService.findUser(requestDTO.getOwnerFiscalCode());
+            userService.findUserRegistry(requestDTO.getOwnerFiscalCode());
 
             CarEntity car = mapper.toEntity(requestDTO);
             repository.save(car);
@@ -82,7 +82,7 @@ public class CarServiceImpl implements CarService {
         logger.info("findAllByOwner - IN: ownerFiscalCode({}) ", ownerFiscalCode);
 
         // Control if user with input FiscalCode exists
-        userService.findUser(ownerFiscalCode);
+        userService.findUserRegistry(ownerFiscalCode);
 
         List<CarEntity> carList = repository.findAllByOwnerFiscalCode(ownerFiscalCode);
         List<CarResponseDTO> response = mapper.toDTOList(carList);
@@ -103,7 +103,7 @@ public class CarServiceImpl implements CarService {
         }
         else {
             // Control if user with input FiscalCode exists
-            userService.findUser(requestDTO.getOwnerFiscalCode());
+            userService.findUserRegistry(requestDTO.getOwnerFiscalCode());
             
             CarEntity editCar = mapper.editCar(requestDTO, car.get());
             repository.save(editCar);

@@ -2,7 +2,6 @@ package com.project.usermanager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -16,19 +15,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import com.project.usermanager.controller.UserController;
-import com.project.usermanager.controller.impl.UserControllerImpl;
+import com.project.usermanager.controller.UserRegistryController;
+import com.project.usermanager.controller.impl.UserRegistryControllerImpl;
 import com.project.usermanager.dto.request.user.UserRequestDTOPost;
 import com.project.usermanager.dto.request.user.UserRequestDTOPut;
-import com.project.usermanager.dto.response.UserResponseDTO;
+import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.mapper.UserMapper;
 import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.UserRepository;
-import com.project.usermanager.service.UserService;
-import com.project.usermanager.service.impl.UserServiceImpl;
+import com.project.usermanager.service.UserRegistryService;
+import com.project.usermanager.service.impl.UserRegistryServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class UserTest {
@@ -36,7 +35,7 @@ class UserTest {
     @Mock
     private UserRepository repository;
 
-    private UserController controller;
+    private UserRegistryController controller;
 
     private UserRequestDTOPost requestDTOPost;
     private UserRequestDTOPut requestDTOPut;
@@ -47,8 +46,8 @@ class UserTest {
     void setup() throws BadRequestException {
 
         UserMapper mapper = new UserMapper();
-        UserService service = new UserServiceImpl(repository, mapper);
-        controller = new UserControllerImpl(service);
+        UserRegistryService service = new UserRegistryServiceImpl(repository, mapper);
+        controller = new UserRegistryControllerImpl(service);
 
         // Inzialaze Data
         requestDTOPost = new UserRequestDTOPost();
@@ -81,32 +80,32 @@ class UserTest {
     }
 
     @Test
-    void createUser() throws BadRequestException, ConflictException {
+    void createUserRegistry() throws BadRequestException, ConflictException {
 
         when(repository.findByFiscalCode(anyString())).thenReturn(emptyOptionalUser);
-        controller.createUser(requestDTOPost);
+        controller.createUserRegistry(requestDTOPost);
     }
 
     @Test
-    void findUser() throws BadRequestException, ConflictException, NotFoundException {
+    void findUserRegistry() throws BadRequestException, ConflictException, NotFoundException {
 
         when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
-        ResponseEntity<UserResponseDTO> result = controller.findUser("fiscalcode");
+        ResponseEntity<UserRegistryResponseDTO> result = controller.findUserRegistry("fiscalcode");
         assertEquals("fiscalcode", result.getBody().getFiscalCode());
     }
 
     @Test
-    void editUser() throws BadRequestException, ConflictException, NotFoundException {
+    void editUserRegistry() throws BadRequestException, ConflictException, NotFoundException {
 
         when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
-        controller.editUser(requestDTOPut, "fiscalcode");
+        controller.editUserRegistry(requestDTOPut, "fiscalcode");
     }
 
     @Test 
-    void deleteUser() throws NotFoundException {
+    void deleteUserRegistry() throws NotFoundException {
 
         when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
-        controller.deleteUser("fiscalcode");
+        controller.deleteUserRegistry("fiscalcode");
     }
     
 }
