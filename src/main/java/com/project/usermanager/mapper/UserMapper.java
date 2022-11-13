@@ -5,6 +5,8 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.project.usermanager.dto.request.user.UserRequestDTOPost;
@@ -19,7 +21,11 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class UserMapper {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserMapper.class);
+
     public UserEntity toEntity(UserRequestDTOPost requestDTO) throws BadRequestException {
+
+        logger.info("toEntity - IN: {} ", requestDTO.toString());
 
         UserEntity user = new UserEntity();
         user.setBirthDate(requestDTO.getBirthDate());
@@ -37,11 +43,14 @@ public class UserMapper {
             throw new BadRequestException("The passwords entered are not the same!");
         }
 
+        logger.info("toEntity - OUT: {} ", user.toString());
         return user;
     }
 
 
     public UserResponseDTO toDTO(UserEntity user) {
+
+        logger.info("toDTO - IN: {}", user.toString());
 
         UserResponseDTO responseDTO = new UserResponseDTO();
         responseDTO.setAge(Period.between(user.getBirthDate(), LocalDate.now()).getYears());
@@ -53,20 +62,26 @@ public class UserMapper {
         responseDTO.setLastName(user.getLastName());
         responseDTO.setName(user.getName());
 
+        logger.info("toDTO - OUT: {} ", responseDTO.toString());
         return responseDTO;
     }
 
     public List<UserResponseDTO> toDTOList(List<UserEntity> userList) {
+
+        logger.info("toDTOList - IN: {} ", userList.toString());
 
         List<UserResponseDTO> responseDTOList = new ArrayList<>();
         for (UserEntity user : userList) {
             responseDTOList.add(this.toDTO(user));
         }
 
+        logger.info("toDTOList - OUT: {} ", responseDTOList.toString());
         return responseDTOList;
     }
 
     public UserEntity editUser(UserRequestDTOPut requestDTO, UserEntity user) throws BadRequestException {
+
+        logger.info("editUser - IN: {}, {} ", requestDTO.toString(), user.toString());
 
         if (requestDTO.getBirthDate() != null) {
             user.setBirthDate(requestDTO.getBirthDate());
@@ -98,6 +113,8 @@ public class UserMapper {
                 throw new BadRequestException("The passwords entered are not the same!");
             }
         }
+
+        logger.info("editUser - OUT: {} ", user.toString());
         return user;
     }
     
