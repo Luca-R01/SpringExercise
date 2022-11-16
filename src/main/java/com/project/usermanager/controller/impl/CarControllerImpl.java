@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,42 +29,77 @@ public class CarControllerImpl implements CarController {
     @Autowired
     private final CarService service;
 
+    private static final Logger logger = LoggerFactory.getLogger(CarControllerImpl.class);
+
     @Override
-    public void createCar(@Valid CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException {
+    public ResponseEntity<CarResponseDTO> createCar(@Valid CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException {
         
-        service.createCar(requestDTO);
+        logger.info("createCar - IN: {} ", requestDTO.toString());
+
+        CarResponseDTO responseDTO = service.createCar(requestDTO);
+        ResponseEntity<CarResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+
+        logger.info("createCar - OUT: {} ", response.toString());
+        return response;
     }
 
     @Override
     public ResponseEntity<CarResponseDTO> findCar(String licensePlate) throws NotFoundException {
 
-        CarResponseDTO response = service.findCar(licensePlate);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        logger.info("findCar - IN: licensePlate({}) ", licensePlate);
+
+        CarResponseDTO responseDTO = service.findCar(licensePlate);
+        ResponseEntity<CarResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        logger.info("findCar - OUT: {} ", response.toString());
+        return response;
     }
 
     @Override
     public ResponseEntity<List<CarResponseDTO>> findAll(String ownerFiscalCode) throws NotFoundException {
 
         if (ownerFiscalCode == null) {
-            List<CarResponseDTO> response = service.findAll();
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            logger.info("findAll - IN: ownerFiscalCode(NULL) ");
+
+            List<CarResponseDTO> responseDTO = service.findAll();
+            ResponseEntity<List<CarResponseDTO>> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+            logger.info("findAll - OUT: {} ", response.toString());
+            return response;
         }
         else {
-            List<CarResponseDTO> response = service.findAllByOwner(ownerFiscalCode);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            logger.info("findAll - IN: ownerFiscalCode({}) ", ownerFiscalCode);
+
+            List<CarResponseDTO> responseDTO = service.findAllByOwner(ownerFiscalCode);
+            ResponseEntity<List<CarResponseDTO>> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+            logger.info("findAll - OUT: {} ", response.toString());
+            return response;
         }
     }
 
     @Override
-    public void editCar(CarRequestDTOPut requestDTO, String licensePlate) throws BadRequestException, NotFoundException {
+    public ResponseEntity<String> editCar(CarRequestDTOPut requestDTO, String licensePlate) throws BadRequestException, NotFoundException {
         
+        logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
+
         service.editCar(requestDTO, licensePlate);
+        ResponseEntity<String> response = new ResponseEntity<>("EDITED", HttpStatus.NO_CONTENT);
+
+        logger.info("editCar - OUT: {} ", response.toString());
+        return response;
     }
 
     @Override
-    public void deleteCar(String licensePlate) throws NotFoundException {
+    public ResponseEntity<String> deleteCar(String licensePlate) throws NotFoundException {
+
+        logger.info("deleteCar - IN: licensePlate({}) ", licensePlate);
         
         service.deleteCar(licensePlate);
+        ResponseEntity<String> response = new ResponseEntity<>("DELETED", HttpStatus.NO_CONTENT);
+
+        logger.info("deleteCar - OUT: {} ", response.toString());
+        return response;
     }
     
 }

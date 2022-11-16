@@ -36,10 +36,10 @@ public class UserFullServiceImpl implements UserFullService {
 
         UserRegistryResponseDTO userRegistry = userRegistryService.findUserRegistry(fiscalCode);
         List<CarResponseDTO> carList = carService.findAllByOwner(fiscalCode);
-        UserFullResponseDTO responseDTO = new UserFullResponseDTO(userRegistry, carList);
+        UserFullResponseDTO response = new UserFullResponseDTO(userRegistry, carList);
 
-        logger.info("findUser - OUT: {} ", responseDTO.toString());
-        return responseDTO;
+        logger.info("findUser - OUT: {} ", response.toString());
+        return response;
     }
     
 }

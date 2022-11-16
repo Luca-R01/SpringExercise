@@ -13,6 +13,8 @@ public interface UserFullController {
     
     @GetMapping("/api/user/{fiscalCode}")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
-    ResponseEntity<UserFullResponseDTO> findUser(@PathVariable String fiscalCode) throws NotFoundException;
+    ResponseEntity<UserFullResponseDTO> findUser (
+        @PathVariable String fiscalCode
+    ) throws NotFoundException;
 
 }

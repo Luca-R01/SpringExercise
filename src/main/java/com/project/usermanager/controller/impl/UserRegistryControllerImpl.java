@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,36 +29,66 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     @Autowired
     private final UserRegistryService service;
 
-    @Override
-    public void createUserRegistry(@Valid UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
+    private static final Logger logger = LoggerFactory.getLogger(UserRegistryControllerImpl.class);
 
-        service.createUserRegistry(requestDTO);
+    @Override
+    public ResponseEntity<UserRegistryResponseDTO> createUserRegistry(@Valid UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
+
+        logger.info("createUser - IN: {} ", requestDTO.toString());
+
+        UserRegistryResponseDTO responseDTO = service.createUserRegistry(requestDTO);
+        ResponseEntity<UserRegistryResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+
+        logger.info("createUser - OUT: {} ", response.toString());
+        return response;
     }
 
     @Override
     public ResponseEntity<UserRegistryResponseDTO> findUserRegistry(String fiscalCode) throws BadRequestException, ConflictException, NotFoundException {
         
+        logger.info("findUser - IN: fiscalCode({}) ", fiscalCode);
+
         UserRegistryResponseDTO responseDTO = service.findUserRegistry(fiscalCode);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        ResponseEntity<UserRegistryResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        logger.info("findUser - OUT: {} ", response.toString());
+        return response;
     }
 
     @Override
-    public void editUserRegistry(@Valid UserRequestDTOPut requestDTO, String fiscalCode) throws BadRequestException, NotFoundException {
+    public ResponseEntity<String> editUserRegistry(@Valid UserRequestDTOPut requestDTO, String fiscalCode) throws BadRequestException, NotFoundException {
         
+        logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
+
         service.editUserRegistry(requestDTO, fiscalCode);
+        ResponseEntity<String> response = new ResponseEntity<>("EDITED", HttpStatus.NO_CONTENT);
+
+        logger.info("editUser - OUT: {} ", response.toString());
+        return response;
     }
 
     @Override
-    public void deleteUserRegistry(String fiscalCode) throws NotFoundException {
+    public ResponseEntity<String> deleteUserRegistry(String fiscalCode) throws NotFoundException {
         
-        service.deleteUserRegistry(fiscalCode);  
+        logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
+
+        service.deleteUserRegistry(fiscalCode);
+        ResponseEntity<String> response = new ResponseEntity<>("DELETED", HttpStatus.NO_CONTENT);
+
+        logger.info("deleteUser - OUT: {} ", response.toString());
+        return response;
     }
 
     @Override
     public ResponseEntity<List<UserRegistryResponseDTO>> findAllUserRegistry() {
 
+        logger.info("findAll - IN: none ");
+
         List<UserRegistryResponseDTO> responseDTOList = service.findAllUserRegistry();
-        return new ResponseEntity<>(responseDTOList, HttpStatus.OK);
+        ResponseEntity<List<UserRegistryResponseDTO>> response = new ResponseEntity<>(responseDTOList, HttpStatus.OK);
+
+        logger.info("findAll - OUT: {} ", response.toString());
+        return response;
     }
     
 }

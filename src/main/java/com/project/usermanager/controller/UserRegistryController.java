@@ -25,19 +25,28 @@ public interface UserRegistryController {
     
     @PostMapping("/api/user/registry")
     @ResponseStatus(code = HttpStatus.CREATED, value = HttpStatus.CREATED)
-    void createUserRegistry(@RequestBody @Valid UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException;
+    ResponseEntity<UserRegistryResponseDTO> createUserRegistry (
+        @RequestBody @Valid UserRequestDTOPost requestDTO
+    ) throws BadRequestException, ConflictException;
 
     @GetMapping("/api/user/registry/{fiscalCode}")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
-    ResponseEntity<UserRegistryResponseDTO> findUserRegistry(@PathVariable String fiscalCode) throws BadRequestException, ConflictException, NotFoundException;
+    ResponseEntity<UserRegistryResponseDTO> findUserRegistry (
+        @PathVariable String fiscalCode
+    ) throws BadRequestException, ConflictException, NotFoundException;
 
     @PutMapping("/api/user/registry/{fiscalCode}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT, value = HttpStatus.NO_CONTENT)
-    void editUserRegistry(@RequestBody @Valid UserRequestDTOPut requestDTO, @PathVariable String fiscalCode) throws BadRequestException, NotFoundException;
+    ResponseEntity<String> editUserRegistry (
+        @RequestBody @Valid UserRequestDTOPut requestDTO, 
+        @PathVariable String fiscalCode
+    ) throws BadRequestException, NotFoundException;
 
     @DeleteMapping("/api/user/registry/{fiscalCode}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT, value = HttpStatus.NO_CONTENT)
-    void deleteUserRegistry(@PathVariable String fiscalCode) throws NotFoundException;
+    ResponseEntity<String> deleteUserRegistry (
+        @PathVariable String fiscalCode
+    ) throws NotFoundException;
 
     @GetMapping("/api/user/registry")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)

@@ -34,7 +34,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     private static final Logger logger = LoggerFactory.getLogger(UserRegistryServiceImpl.class);
 
     @Override
-    public void createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
+    public UserRegistryResponseDTO createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
 
         logger.info("createUser - IN: {} ", requestDTO.toString());
 
@@ -48,6 +48,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             repository.save(user);
 
             logger.info("createUser - OUT: {} ", user.toString());
+            return mapper.toDTO(user);
         }
     }
 
@@ -61,10 +62,10 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             throw new NotFoundException("User not found!");
         }
         else {
-            UserRegistryResponseDTO responseDTO = mapper.toDTO(user.get());
+            UserRegistryResponseDTO response = mapper.toDTO(user.get());
 
-            logger.info("findUser - OUT: {} ", responseDTO.toString());
-            return responseDTO;
+            logger.info("findUser - OUT: {} ", response.toString());
+            return response;
         }
     }
 
@@ -99,7 +100,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         else {
             repository.delete(user.get());
 
-            logger.info("deleteUser - OUT: {}, {} ", user.get());
+            logger.info("deleteUser - OUT: {} ", user.get().toString());
         }
     }
 
@@ -109,10 +110,10 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         logger.info("findAll - IN: none ");
 
         List<UserEntity> userList = repository.findAll();
-        List<UserRegistryResponseDTO> responseDTOList = mapper.toDTOList(userList);
+        List<UserRegistryResponseDTO> response = mapper.toDTOList(userList);
         
-        logger.info("findAll - OUT: {} ", responseDTOList.toString());
-        return responseDTOList;
+        logger.info("findAll - OUT: {} ", response.toString());
+        return response;
     }
     
 }

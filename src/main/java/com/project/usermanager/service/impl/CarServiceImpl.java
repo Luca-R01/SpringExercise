@@ -38,13 +38,13 @@ public class CarServiceImpl implements CarService {
     private static final Logger logger = LoggerFactory.getLogger(CarServiceImpl.class);
 
     @Override
-    public void createCar(CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException {
+    public CarResponseDTO createCar(CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException {
 
         logger.info("createCar - IN: {} ", requestDTO.toString());
 
         Optional<CarEntity> findCar = repository.findByLicensePlate(requestDTO.getLicensePlate());
         if (findCar.isPresent()) {
-            logger.info("createCar - OUT: NotFoundException ");
+            logger.info("createCar - OUT: ConflictException ");
             throw new ConflictException("Car alredy exists!");
         }
         else {
@@ -55,6 +55,7 @@ public class CarServiceImpl implements CarService {
             repository.save(car);
 
             logger.info("createCar - OUT: {} ", car.toString());
+            return mapper.toDTO(car);
         }
     }
 
@@ -134,12 +135,12 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<CarResponseDTO> findAll() {
 
-        logger.info("findCar - IN: none ");
+        logger.info("findAll - IN: none ");
         
         List<CarEntity> carList = repository.findAll();
         List<CarResponseDTO> response = mapper.toDTOList(carList);
 
-        logger.info("findCar - OUT: {} ", response.toString());
+        logger.info("findAll - OUT: {} ", response.toString());
         return response;
     }
     

@@ -11,7 +11,7 @@ import com.project.usermanager.exception.NotFoundException;
 
 public interface CarService {
 
-    void createCar(CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException;
+    CarResponseDTO createCar(CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException;
 
     CarResponseDTO findCar(String licensePlate) throws NotFoundException;
 

@@ -11,7 +11,7 @@ import com.project.usermanager.exception.NotFoundException;
 
 public interface UserRegistryService {
 
-    void createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException;
+    UserRegistryResponseDTO createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException;
 
     UserRegistryResponseDTO findUserRegistry(String fiscalCode) throws NotFoundException;
 

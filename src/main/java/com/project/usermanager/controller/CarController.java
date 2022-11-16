@@ -26,22 +26,33 @@ public interface CarController {
 
     @PostMapping("/api/car")
     @ResponseStatus(code = HttpStatus.CREATED, value = HttpStatus.CREATED)
-    void createCar(@RequestBody @Valid CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException;
+    ResponseEntity<CarResponseDTO> createCar (
+        @RequestBody @Valid CarRequestDTOPost requestDTO
+    ) throws BadRequestException, ConflictException, NotFoundException;
 
     @GetMapping("/api/car/{licensePlate}")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
-    ResponseEntity<CarResponseDTO> findCar(@PathVariable String licensePlate) throws NotFoundException;
+    ResponseEntity<CarResponseDTO> findCar (
+        @PathVariable String licensePlate
+    ) throws NotFoundException;
 
     @GetMapping("/api/car")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
-    ResponseEntity<List<CarResponseDTO>> findAll(@RequestParam(required = false) String ownerFiscalCode) throws NotFoundException;
+    ResponseEntity<List<CarResponseDTO>> findAll (
+        @RequestParam(required = false) String ownerFiscalCode
+    ) throws NotFoundException;
 
     @PutMapping("/api/car/{licensePlate}")
     @ResponseStatus(code = HttpStatus.CONTINUE, value = HttpStatus.CONTINUE)
-    void editCar(CarRequestDTOPut requestDTO, String licensePlate) throws BadRequestException, NotFoundException;
+    ResponseEntity<String> editCar (
+        @RequestBody @Valid CarRequestDTOPut requestDTO, 
+        @PathVariable String licensePlate
+    ) throws BadRequestException, NotFoundException;
 
     @DeleteMapping("/api/car/{licensePlate}")
     @ResponseStatus(code = HttpStatus.CONTINUE, value = HttpStatus.CONTINUE)
-    void deleteCar(String licensePlate) throws NotFoundException;
+    ResponseEntity<String> deleteCar (
+        @PathVariable String licensePlate
+    ) throws NotFoundException;
     
 }
