@@ -83,7 +83,8 @@ class UserTest {
     void createUserRegistry() throws BadRequestException, ConflictException {
 
         when(repository.findByFiscalCode(anyString())).thenReturn(emptyOptionalUser);
-        controller.createUserRegistry(requestDTOPost);
+        ResponseEntity<UserRegistryResponseDTO> result = controller.createUserRegistry(requestDTOPost);
+        assertEquals(requestDTOPost.getName(), result.getBody().getName());
     }
 
     @Test

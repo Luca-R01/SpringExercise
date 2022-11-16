@@ -16,9 +16,10 @@ import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.mapper.CarMapper;
 import com.project.usermanager.model.CarEntity;
+import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.CarRepository;
+import com.project.usermanager.repository.UserRepository;
 import com.project.usermanager.service.CarService;
-import com.project.usermanager.service.UserRegistryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,10 +31,10 @@ public class CarServiceImpl implements CarService {
     private final CarRepository repository;
 
     @Autowired
-    private final CarMapper mapper;
+    private final UserRepository userRepository;
 
     @Autowired
-    private final UserRegistryService userService;
+    private final CarMapper mapper;
 
     private static final Logger logger = LoggerFactory.getLogger(CarServiceImpl.class);
 
@@ -47,16 +48,17 @@ public class CarServiceImpl implements CarService {
             logger.info("createCar - OUT: ConflictException ");
             throw new ConflictException("Car alredy exists!");
         }
-        else {
-            // Control if user with input FiscalCode exists
-            userService.findUserRegistry(requestDTO.getOwnerFiscalCode());
-
-            CarEntity car = mapper.toEntity(requestDTO);
-            repository.save(car);
-
-            logger.info("createCar - OUT: {} ", car.toString());
-            return mapper.toDTO(car);
+        // Control if user with input FiscalCode exists
+        Optional<UserEntity> owner = userRepository.findByFiscalCode(requestDTO.getOwnerFiscalCode());
+        if (owner.isEmpty()) {
+            logger.info("createCar - OUT: NotFoundException ");
+            throw new NotFoundException("Owner Not Found");
         }
+        CarEntity car = mapper.toEntity(requestDTO);
+        repository.save(car);
+
+        logger.info("createCar - OUT: {} ", car.toString());
+        return mapper.toDTO(car);
     }
 
     @Override
@@ -69,12 +71,10 @@ public class CarServiceImpl implements CarService {
             logger.info("findCar - OUT: NotFoundException ");
             throw new NotFoundException("Car not found!");
         }
-        else {
-            CarResponseDTO response = mapper.toDTO(car.get());
+        CarResponseDTO response = mapper.toDTO(car.get());
 
-            logger.info("findCar - OUT: {} ", response.toString());
-            return response;
-        }
+        logger.info("findCar - OUT: {} ", response.toString());
+        return response;
     }
 
     @Override
@@ -83,8 +83,11 @@ public class CarServiceImpl implements CarService {
         logger.info("findAllByOwner - IN: ownerFiscalCode({}) ", ownerFiscalCode);
 
         // Control if user with input FiscalCode exists
-        userService.findUserRegistry(ownerFiscalCode);
-
+        Optional<UserEntity> owner = userRepository.findByFiscalCode(ownerFiscalCode);
+        if (owner.isEmpty()) {
+            logger.info("findAllByOwner - OUT: NotFoundException ");
+            throw new NotFoundException("Owner Not Found");
+        }
         List<CarEntity> carList = repository.findAllByOwnerFiscalCode(ownerFiscalCode);
         List<CarResponseDTO> response = mapper.toDTOList(carList);
 
@@ -102,17 +105,16 @@ public class CarServiceImpl implements CarService {
             logger.info("editCar - OUT: NotFoundException ");
             throw new NotFoundException("Car not found!");
         }
-        else {
-            // Control if user with input FiscalCode exists
-            userService.findUserRegistry(requestDTO.getOwnerFiscalCode());
-            
-            CarEntity editCar = mapper.editCar(requestDTO, car.get());
-            repository.save(editCar);
-
-            logger.info("editCar - OUT: {} ", editCar.toString());
+        // Control if user with input FiscalCode exists
+        Optional<UserEntity> owner = userRepository.findByFiscalCode(requestDTO.getOwnerFiscalCode());
+        if (owner.isEmpty()) {
+            logger.info("editCar - OUT: NotFoundException ");
+            throw new NotFoundException("Owner Not Found");
         }
+        CarEntity editCar = mapper.editCar(requestDTO, car.get());
+        repository.save(editCar);
 
-        
+        logger.info("editCar - OUT: {} ", editCar.toString());
     }
 
     @Override
@@ -125,11 +127,9 @@ public class CarServiceImpl implements CarService {
             logger.info("deleteCar - OUT: NotFoundException ");
             throw new NotFoundException("Car not found!");
         }
-        else {
-            repository.delete(car.get());
+        repository.delete(car.get());
 
-            logger.info("deleteCar - OUT: {} ", car.get().toString());
-        }
+        logger.info("deleteCar - OUT: {} ", car.get().toString());
     }
 
     @Override

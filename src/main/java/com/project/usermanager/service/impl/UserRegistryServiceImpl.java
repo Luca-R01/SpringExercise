@@ -43,13 +43,11 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             logger.info("createUser - OUT: ConflictException ");
             throw new ConflictException("User alredy exixts!");
         }
-        else {
-            UserEntity user = mapper.toEntity(requestDTO);
-            repository.save(user);
+        UserEntity user = mapper.toEntity(requestDTO);
+        repository.save(user);
 
-            logger.info("createUser - OUT: {} ", user.toString());
-            return mapper.toDTO(user);
-        }
+        logger.info("createUser - OUT: {} ", user.toString());
+        return mapper.toDTO(user);
     }
 
     public UserRegistryResponseDTO findUserRegistry(String fiscalCode) throws NotFoundException {
@@ -61,12 +59,10 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             logger.info("findUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
-        else {
-            UserRegistryResponseDTO response = mapper.toDTO(user.get());
+        UserRegistryResponseDTO response = mapper.toDTO(user.get());
 
-            logger.info("findUser - OUT: {} ", response.toString());
-            return response;
-        }
+        logger.info("findUser - OUT: {} ", response.toString());
+        return response;
     }
 
     @Override
@@ -79,12 +75,10 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             logger.info("editUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
-        else {
-            UserEntity editUser = mapper.editUser(requestDTO, user.get());
-            repository.save(editUser);
+        UserEntity editUser = mapper.editUser(requestDTO, user.get());
+        repository.save(editUser);
 
-            logger.info("editUser - OUT: {} ", editUser.toString());
-        }    
+        logger.info("editUser - OUT: {} ", editUser.toString());  
     }
 
     @Override
@@ -97,11 +91,9 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             logger.info("deleteUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
-        else {
-            repository.delete(user.get());
+        repository.delete(user.get());
 
-            logger.info("deleteUser - OUT: {} ", user.get().toString());
-        }
+        logger.info("deleteUser - OUT: {} ", user.get().toString());
     }
 
     @Override
