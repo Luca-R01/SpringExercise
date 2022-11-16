@@ -27,13 +27,14 @@ public class UserMapper {
 
         logger.info("toEntity - IN: {} ", requestDTO.toString());
 
-        UserEntity user = new UserEntity();
-        user.setBirthDate(requestDTO.getBirthDate());
-        user.setEmail(requestDTO.getEmail());
-        user.setFiscalCode(requestDTO.getFiscalCode());
-        user.setGender(requestDTO.getGender());
-        user.setLastName(requestDTO.getLastName());
-        user.setName(requestDTO.getName());
+        UserEntity user = UserEntity.builder()
+            .birthDate(requestDTO.getBirthDate())
+            .email(requestDTO.getEmail())
+            .fiscalCode(requestDTO.getFiscalCode())
+            .gender(requestDTO.getGender())
+            .lastName(requestDTO.getLastName())
+            .name(requestDTO.getName())
+        .build();
 
         // Password control
         if (requestDTO.getPassword().equals(requestDTO.getConfirmPassword())) {
@@ -52,15 +53,16 @@ public class UserMapper {
 
         logger.info("toDTO - IN: {}", user.toString());
 
-        UserRegistryResponseDTO responseDTO = new UserRegistryResponseDTO();
-        responseDTO.setAge(Period.between(user.getBirthDate(), LocalDate.now()).getYears());
-        responseDTO.setEmail(user.getEmail());
-        responseDTO.setBirthDate(user.getBirthDate());
-        responseDTO.setFiscalCode(user.getFiscalCode());
-        responseDTO.setGender(user.getGender());
-        responseDTO.setId(user.getId().toString());
-        responseDTO.setLastName(user.getLastName());
-        responseDTO.setName(user.getName());
+        UserRegistryResponseDTO responseDTO = UserRegistryResponseDTO.builder()
+            .age(Period.between(user.getBirthDate(), LocalDate.now()).getYears())
+            .email(user.getEmail())
+            .birthDate(user.getBirthDate())
+            .fiscalCode(user.getFiscalCode())
+            .gender(user.getGender())
+            .id(user.getId().toString())
+            .lastName(user.getLastName())
+            .name(user.getName())
+        .build();
 
         logger.info("toDTO - OUT: {} ", responseDTO.toString());
         return responseDTO;

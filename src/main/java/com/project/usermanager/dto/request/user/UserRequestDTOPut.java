@@ -7,9 +7,11 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class UserRequestDTOPut {
 
     @JsonProperty("FISCAL_CODE")

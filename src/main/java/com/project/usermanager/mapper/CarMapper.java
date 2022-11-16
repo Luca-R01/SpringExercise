@@ -25,11 +25,12 @@ public class CarMapper {
 
         logger.info("toEntity - IN: {} ", requestDTO.toString());
 
-        CarEntity car = new CarEntity();
-        car.setBrand(requestDTO.getBrand());
-        car.setLicensePlate(requestDTO.getLicensePlate());
-        car.setModel(requestDTO.getModel());
-        car.setOwnerFiscalCode(requestDTO.getOwnerFiscalCode());
+        CarEntity car = CarEntity.builder()
+            .brand(requestDTO.getBrand())
+            .licensePlate(requestDTO.getLicensePlate())
+            .model(requestDTO.getModel())
+            .ownerFiscalCode(requestDTO.getOwnerFiscalCode())
+        .build();
 
         logger.info("toEntity - OUT: {} ", car.toString());
         return car;
@@ -40,12 +41,13 @@ public class CarMapper {
 
         logger.info("toDTO - IN: {} ", car.toString());
 
-        CarResponseDTO responseDTO = new CarResponseDTO();
-        responseDTO.setBrand(car.getBrand());
-        responseDTO.setId(car.getId().toString());
-        responseDTO.setLicensePlate(car.getLicensePlate());
-        responseDTO.setModel(car.getModel());
-        responseDTO.setOwnerFiscalCode(car.getOwnerFiscalCode());
+        CarResponseDTO responseDTO = CarResponseDTO.builder()
+            .brand(car.getBrand())
+            .id(car.getId().toString())
+            .licensePlate(car.getLicensePlate())
+            .model(car.getModel())
+            .ownerFiscalCode(car.getOwnerFiscalCode())
+        .build();
 
         logger.info("toDTO - OUT: {} ", responseDTO.toString());
         return responseDTO;

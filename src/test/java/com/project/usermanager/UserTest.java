@@ -50,28 +50,30 @@ class UserTest {
         controller = new UserRegistryControllerImpl(service);
 
         // Inzialaze Data
-        requestDTOPost = new UserRequestDTOPost();
-        requestDTOPost.setBirthDate(LocalDate.parse("2001-11-06"));
-        requestDTOPost.setConfirmPassword("password");
-        requestDTOPost.setPassword("password");
-        requestDTOPost.setEmail("email@email.it");
-        requestDTOPost.setFiscalCode("fiscalcode");
-        requestDTOPost.setGender("M");
-        requestDTOPost.setLastName("lastname");
-        requestDTOPost.setName("name");
+        requestDTOPost = UserRequestDTOPost.builder()
+            .birthDate(LocalDate.now())
+            .confirmPassword("passwd")
+            .password("passwd")
+            .email("email@email.it")
+            .fiscalCode("fiscalcode")
+            .gender("M")
+            .lastName("lastname")
+            .name("name")
+        .build();
 
-        requestDTOPut = new UserRequestDTOPut();
-        requestDTOPut.setName("new name");
+        requestDTOPut = UserRequestDTOPut.builder()
+            .name("New Name")
+        .build();
 
-        UserEntity user = new UserEntity();
-        user.setBirthDate(LocalDate.parse("2001-11-06"));
-        user.setPassword("password");
-        user.setEmail("email@email.it");
-        user.setFiscalCode("fiscalcode");
-        user.setGender("M");
-        user.setLastName("lastname");
-        user.setName("name");
-        user.setId(new ObjectId());
+        UserEntity user = UserEntity.builder()
+            .birthDate(LocalDate.now())
+            .password("passwd")
+            .email("email@email.it")
+            .fiscalCode("fiscalcode")
+            .gender("M")
+            .lastName("lastname")
+            .name("name")
+        .build();
 
         optionalUser = Optional.of(user);
 

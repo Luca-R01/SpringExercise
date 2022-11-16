@@ -2,9 +2,11 @@ package com.project.usermanager.dto.request.car;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class CarRequestDTOPut {
 
     @JsonProperty("OWNER_FISCAL_CODE")
