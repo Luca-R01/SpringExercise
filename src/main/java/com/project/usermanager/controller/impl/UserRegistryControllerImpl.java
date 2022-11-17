@@ -18,9 +18,8 @@ import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.service.UserRegistryService;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
+import lombok.Builder;
+@Builder
 @RestController
 public class UserRegistryControllerImpl implements UserRegistryController {
 

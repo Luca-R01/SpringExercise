@@ -55,9 +55,17 @@ class CarTest {
     @BeforeEach
     void setup() throws BadRequestException {
 
-        CarMapper mapper = new CarMapper();
-        CarService service = new CarServiceImpl(repository, userRepository, mapper);
-        controller = new CarControllerImpl(service);
+        CarMapper mapper = CarMapper.builder().build();
+
+        CarService service = CarServiceImpl.builder()
+            .mapper(mapper)
+            .repository(repository)
+            .userRepository(userRepository)
+        .build();
+
+        controller = CarControllerImpl.builder()
+            .service(service)
+        .build();
 
         // Inzialaze Data
         requestDTOPost = CarRequestDTOPost.builder()

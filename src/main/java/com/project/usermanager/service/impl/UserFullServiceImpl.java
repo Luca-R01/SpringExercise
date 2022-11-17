@@ -17,9 +17,9 @@ import com.project.usermanager.repository.CarRepository;
 import com.project.usermanager.repository.UserRepository;
 import com.project.usermanager.service.UserFullService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 
-@RequiredArgsConstructor
+@Builder
 @Service
 public class UserFullServiceImpl implements UserFullService {
 

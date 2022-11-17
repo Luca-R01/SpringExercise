@@ -12,9 +12,9 @@ import com.project.usermanager.dto.request.car.CarRequestDTOPut;
 import com.project.usermanager.dto.response.CarResponseDTO;
 import com.project.usermanager.model.CarEntity;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 
-@RequiredArgsConstructor
+@Builder
 @Component
 public class CarMapper {
 

@@ -18,9 +18,9 @@ import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.service.CarService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 
-@RequiredArgsConstructor
+@Builder
 @RestController
 public class CarControllerImpl implements CarController {
 

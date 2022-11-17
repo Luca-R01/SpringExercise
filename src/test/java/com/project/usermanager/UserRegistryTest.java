@@ -49,9 +49,16 @@ class UserRegistryTest {
     @BeforeEach
     void setup() throws BadRequestException {
 
-        UserMapper mapper = new UserMapper();
-        UserRegistryService service = new UserRegistryServiceImpl(repository, mapper);
-        controller = new UserRegistryControllerImpl(service);
+        UserMapper mapper = UserMapper.builder().build();
+
+        UserRegistryService service = UserRegistryServiceImpl.builder()
+            .repository(repository)
+            .mapper(mapper)
+        .build();
+
+        controller = UserRegistryControllerImpl.builder()
+            .service(service)
+        .build();
 
         // Inzialaze Data
         requestDTOPost = UserRequestDTOPost.builder()

@@ -16,9 +16,9 @@ import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.util.PasswordUtil;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 
-@RequiredArgsConstructor
+@Builder
 @Component
 public class UserMapper {
 

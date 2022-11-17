@@ -11,9 +11,9 @@ import com.project.usermanager.dto.response.UserFullResponseDTO;
 import com.project.usermanager.model.CarEntity;
 import com.project.usermanager.model.UserEntity;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 
-@RequiredArgsConstructor
+@Builder
 @Component
 public class UserFullMapper {
 

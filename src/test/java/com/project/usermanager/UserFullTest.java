@@ -48,11 +48,23 @@ class UserFullTest {
     @BeforeEach
     void setup() {
 
-        UserMapper userMapper = new UserMapper();
-        CarMapper carMapper = new CarMapper();
-        UserFullMapper mapper = new UserFullMapper(userMapper, carMapper);
-        UserFullService service = new UserFullServiceImpl(userRepository, carRepository, mapper);
-        controller = new UserFullControllerImpl(service);
+        UserMapper userMapper = UserMapper.builder().build();
+        CarMapper carMapper = CarMapper.builder().build();
+
+        UserFullMapper mapper = UserFullMapper.builder()
+            .carMapper(carMapper)
+            .userMapper(userMapper)
+        .build();
+
+        UserFullService service = UserFullServiceImpl.builder()
+            .carRepository(carRepository)
+            .userRepository(userRepository)
+            .mapper(mapper)
+        .build();
+
+        controller = UserFullControllerImpl.builder()
+            .service(service)
+        .build();
 
         // Inizialize Data
 

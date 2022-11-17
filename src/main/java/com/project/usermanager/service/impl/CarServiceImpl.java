@@ -22,9 +22,9 @@ import com.project.usermanager.repository.UserRepository;
 import com.project.usermanager.service.CarService;
 import com.project.usermanager.util.PasswordUtil;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 
-@RequiredArgsConstructor
+@Builder
 @Service
 public class CarServiceImpl implements CarService {
 

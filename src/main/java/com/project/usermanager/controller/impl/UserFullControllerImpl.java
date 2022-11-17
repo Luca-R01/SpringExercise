@@ -12,9 +12,9 @@ import com.project.usermanager.dto.response.UserFullResponseDTO;
 import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.service.UserFullService;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 
-@RequiredArgsConstructor
+@Builder
 @RestController
 public class UserFullControllerImpl implements UserFullController {
 

@@ -20,9 +20,9 @@ import com.project.usermanager.repository.UserRepository;
 import com.project.usermanager.service.UserRegistryService;
 import com.project.usermanager.util.PasswordUtil;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 
-@RequiredArgsConstructor
+@Builder
 @Service
 public class UserRegistryServiceImpl implements UserRegistryService {
 
