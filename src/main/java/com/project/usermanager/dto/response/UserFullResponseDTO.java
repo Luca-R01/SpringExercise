@@ -4,15 +4,16 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Builder
+@Getter
+@Setter
+@ToString
 public class UserFullResponseDTO {
 
     @JsonProperty("USER_REGISTRY")

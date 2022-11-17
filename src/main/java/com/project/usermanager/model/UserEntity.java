@@ -8,10 +8,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+
 @Builder
+@Getter
+@Setter
+@ToString
 @Document(collection = "users")
 public class UserEntity {
 

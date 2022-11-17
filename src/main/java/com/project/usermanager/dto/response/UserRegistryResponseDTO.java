@@ -5,10 +5,14 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
 @Builder
+@Getter
+@Setter
+@ToString
 public class UserRegistryResponseDTO {
 
     @JsonProperty("ID")
