@@ -38,13 +38,11 @@ public class UserMapper {
         .build();
 
         // Password control
-        if (requestDTO.getPassword().equals(requestDTO.getConfirmPassword())) {
-            String encryptedPassword = PasswordUtil.encryptPassword(requestDTO.getPassword());
-            user.setPassword(encryptedPassword);
-        }
-        else {
+        if (!requestDTO.getPassword().equals(requestDTO.getConfirmPassword())) {
             throw new BadRequestException("The passwords entered are not the same!");
         }
+        String encryptedPassword = PasswordUtil.encryptPassword(requestDTO.getPassword());
+        user.setPassword(encryptedPassword);
 
         logger.info("toEntity - OUT: {} ", user.toString());
         return user;
@@ -110,12 +108,10 @@ public class UserMapper {
         }
         if (requestDTO.getPassword() != null && requestDTO.getConfirmPassword() != null) {
             // Password control
-            if (requestDTO.getPassword().equals(requestDTO.getConfirmPassword())) {
-                user.setPassword(requestDTO.getPassword());
-            }
-            else {
+            if (!requestDTO.getPassword().equals(requestDTO.getConfirmPassword())) {
                 throw new BadRequestException("The passwords entered are not the same!");
             }
+            user.setPassword(requestDTO.getPassword());
         }
 
         logger.info("editUser - OUT: {} ", user.toString());
