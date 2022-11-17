@@ -18,6 +18,7 @@ import com.project.usermanager.mapper.UserMapper;
 import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.UserRepository;
 import com.project.usermanager.service.UserRegistryService;
+import com.project.usermanager.util.PasswordUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +45,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             throw new ConflictException("User alredy exixts!");
         }
         UserEntity user = mapper.toEntity(requestDTO);
-        repository.save(user);
+        user = repository.save(user);
 
         logger.info("createUser - OUT: {} ", user.toString());
         return mapper.toDTO(user);
@@ -66,11 +67,12 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     }
 
     @Override
-    public void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode) throws BadRequestException, NotFoundException {
+    public void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException {
 
         logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
         
-        Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
+        String encryptedPassword = PasswordUtil.encryptPassword(password);
+        Optional<UserEntity> user = repository.findByFiscalCodeAndPassword(fiscalCode, encryptedPassword);
         if (user.isEmpty()) {
             logger.info("editUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
@@ -82,11 +84,12 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     }
 
     @Override
-    public void deleteUserRegistry(String fiscalCode) throws NotFoundException {
+    public void deleteUserRegistry(String fiscalCode, String password) throws NotFoundException {
 
         logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
-        
-        Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
+
+        String encryptedPassword = PasswordUtil.encryptPassword(password);
+        Optional<UserEntity> user = repository.findByFiscalCodeAndPassword(fiscalCode, encryptedPassword);
         if (user.isEmpty()) {
             logger.info("deleteUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");

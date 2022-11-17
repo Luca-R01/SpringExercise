@@ -11,15 +11,15 @@ import com.project.usermanager.exception.NotFoundException;
 
 public interface CarService {
 
-    CarResponseDTO createCar(CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException;
+    CarResponseDTO createCar(CarRequestDTOPost requestDTO, String ownerPassword) throws BadRequestException, ConflictException, NotFoundException;
 
     CarResponseDTO findCar(String licensePlate) throws NotFoundException;
 
     List<CarResponseDTO> findAllByOwner(String ownerFiscalCode) throws NotFoundException;
 
-    void editCar(CarRequestDTOPut requestDTO, String licensePlate) throws BadRequestException, NotFoundException;
+    void editCar(CarRequestDTOPut requestDTO, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException;
 
-    void deleteCar(String licensePlate) throws NotFoundException;
+    void deleteCar(String licensePlate, String ownerPassword) throws NotFoundException;
 
     List<CarResponseDTO> findAll();
     

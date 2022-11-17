@@ -32,11 +32,11 @@ public class CarControllerImpl implements CarController {
     private static final Logger logger = LoggerFactory.getLogger(CarControllerImpl.class);
 
     @Override
-    public ResponseEntity<CarResponseDTO> createCar(@Valid CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException {
+    public ResponseEntity<CarResponseDTO> createCar(@Valid CarRequestDTOPost requestDTO, String password) throws BadRequestException, ConflictException, NotFoundException {
         
         logger.info("createCar - IN: {} ", requestDTO.toString());
 
-        CarResponseDTO responseDTO = service.createCar(requestDTO);
+        CarResponseDTO responseDTO = service.createCar(requestDTO, password);
         ResponseEntity<CarResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
         logger.info("createCar - OUT: {} ", response.toString());
@@ -79,11 +79,11 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    public ResponseEntity<String> editCar(CarRequestDTOPut requestDTO, String licensePlate) throws BadRequestException, NotFoundException {
+    public ResponseEntity<String> editCar(CarRequestDTOPut requestDTO, String licensePlate, String password) throws BadRequestException, NotFoundException {
         
         logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
 
-        service.editCar(requestDTO, licensePlate);
+        service.editCar(requestDTO, licensePlate, password);
         ResponseEntity<String> response = new ResponseEntity<>("EDITED", HttpStatus.NO_CONTENT);
 
         logger.info("editCar - OUT: {} ", response.toString());
@@ -91,11 +91,11 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    public ResponseEntity<String> deleteCar(String licensePlate) throws NotFoundException {
+    public ResponseEntity<String> deleteCar(String licensePlate, String password) throws NotFoundException {
 
         logger.info("deleteCar - IN: licensePlate({}) ", licensePlate);
         
-        service.deleteCar(licensePlate);
+        service.deleteCar(licensePlate, password);
         ResponseEntity<String> response = new ResponseEntity<>("DELETED", HttpStatus.NO_CONTENT);
 
         logger.info("deleteCar - OUT: {} ", response.toString());

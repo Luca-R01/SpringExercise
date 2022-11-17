@@ -20,6 +20,7 @@ import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.CarRepository;
 import com.project.usermanager.repository.UserRepository;
 import com.project.usermanager.service.CarService;
+import com.project.usermanager.util.PasswordUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,23 +40,27 @@ public class CarServiceImpl implements CarService {
     private static final Logger logger = LoggerFactory.getLogger(CarServiceImpl.class);
 
     @Override
-    public CarResponseDTO createCar(CarRequestDTOPost requestDTO) throws BadRequestException, ConflictException, NotFoundException {
+    public CarResponseDTO createCar(CarRequestDTOPost requestDTO, String ownerPassword) throws BadRequestException, ConflictException, NotFoundException {
 
         logger.info("createCar - IN: {} ", requestDTO.toString());
 
+        // Control if car already exists
         Optional<CarEntity> findCar = repository.findByLicensePlate(requestDTO.getLicensePlate());
         if (findCar.isPresent()) {
             logger.info("createCar - OUT: ConflictException ");
             throw new ConflictException("Car alredy exists!");
         }
-        // Control if user with input FiscalCode exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCode(requestDTO.getOwnerFiscalCode());
+        // Encrypt password
+        String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
+        // Control if user with input FiscalCode and Password exists
+        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(requestDTO.getOwnerFiscalCode(), encryptedPassword);
         if (owner.isEmpty()) {
             logger.info("createCar - OUT: NotFoundException ");
             throw new NotFoundException("Owner Not Found");
         }
+        // Create
         CarEntity car = mapper.toEntity(requestDTO);
-        repository.save(car);
+        car = repository.save(car);
 
         logger.info("createCar - OUT: {} ", car.toString());
         return mapper.toDTO(car);
@@ -66,6 +71,7 @@ public class CarServiceImpl implements CarService {
 
         logger.info("findCar - IN: licensePlate({}) ", licensePlate);
         
+        // Find car
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
             logger.info("findCar - OUT: NotFoundException ");
@@ -88,6 +94,7 @@ public class CarServiceImpl implements CarService {
             logger.info("findAllByOwner - OUT: NotFoundException ");
             throw new NotFoundException("Owner Not Found");
         }
+        // Find car
         List<CarEntity> carList = repository.findAllByOwnerFiscalCode(ownerFiscalCode);
         List<CarResponseDTO> response = mapper.toDTOList(carList);
 
@@ -96,21 +103,25 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void editCar(CarRequestDTOPut requestDTO, String licensePlate) throws BadRequestException, NotFoundException {
+    public void editCar(CarRequestDTOPut requestDTO, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException {
 
         logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
         
+        // Find car
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
             logger.info("editCar - OUT: NotFoundException ");
             throw new NotFoundException("Car not found!");
         }
-        // Control if user with input FiscalCode exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCode(requestDTO.getOwnerFiscalCode());
+        // Encrypt password
+        String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
+        // Control if user with input FiscalCode and Password exists
+        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(requestDTO.getOwnerFiscalCode(), encryptedPassword);
         if (owner.isEmpty()) {
             logger.info("editCar - OUT: NotFoundException ");
-            throw new NotFoundException("Owner Not Found");
+            throw new NotFoundException("Owner not found!");
         }
+        // Edit Car
         CarEntity editCar = mapper.editCar(requestDTO, car.get());
         repository.save(editCar);
 
@@ -118,14 +129,23 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void deleteCar(String licensePlate) throws NotFoundException {
+    public void deleteCar(String licensePlate, String ownerPassword) throws NotFoundException {
         
         logger.info("deleteCar - IN: licensePlate({}) ", licensePlate);
 
+        // Find car
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
             logger.info("deleteCar - OUT: NotFoundException ");
             throw new NotFoundException("Car not found!");
+        }
+        // Encrypt password
+        String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
+        // Control if user with input FiscalCode and Password exists
+        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
+        if (owner.isEmpty()) {
+            logger.info("deleteCar - OUT: NotFoundException ");
+            throw new NotFoundException("Owner not found!");
         }
         repository.delete(car.get());
 
@@ -137,6 +157,7 @@ public class CarServiceImpl implements CarService {
 
         logger.info("findAll - IN: none ");
         
+        // Find car
         List<CarEntity> carList = repository.findAll();
         List<CarResponseDTO> response = mapper.toDTOList(carList);
 

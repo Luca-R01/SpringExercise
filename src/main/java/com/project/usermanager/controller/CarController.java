@@ -24,10 +24,11 @@ import com.project.usermanager.exception.NotFoundException;
 
 public interface CarController {
 
-    @PostMapping("/api/car")
+    @PostMapping("/api/car/owner/{password}")
     @ResponseStatus(code = HttpStatus.CREATED, value = HttpStatus.CREATED)
     ResponseEntity<CarResponseDTO> createCar (
-        @RequestBody @Valid CarRequestDTOPost requestDTO
+        @RequestBody @Valid CarRequestDTOPost requestDTO,
+        @PathVariable String password
     ) throws BadRequestException, ConflictException, NotFoundException;
 
     @GetMapping("/api/car/{licensePlate}")
@@ -42,17 +43,19 @@ public interface CarController {
         @RequestParam(required = false) String ownerFiscalCode
     ) throws NotFoundException;
 
-    @PutMapping("/api/car/{licensePlate}")
+    @PutMapping("/api/car/{licensePlate}/owner/{password}")
     @ResponseStatus(code = HttpStatus.CONTINUE, value = HttpStatus.CONTINUE)
     ResponseEntity<String> editCar (
         @RequestBody @Valid CarRequestDTOPut requestDTO, 
-        @PathVariable String licensePlate
+        @PathVariable String licensePlate,
+        @PathVariable String password
     ) throws BadRequestException, NotFoundException;
 
-    @DeleteMapping("/api/car/{licensePlate}")
+    @DeleteMapping("/api/car/{licensePlate}/owner/{password}")
     @ResponseStatus(code = HttpStatus.CONTINUE, value = HttpStatus.CONTINUE)
     ResponseEntity<String> deleteCar (
-        @PathVariable String licensePlate
+        @PathVariable String licensePlate,
+        @PathVariable String password
     ) throws NotFoundException;
     
 }

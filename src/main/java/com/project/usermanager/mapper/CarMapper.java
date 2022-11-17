@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import com.project.usermanager.dto.request.car.CarRequestDTOPost;
 import com.project.usermanager.dto.request.car.CarRequestDTOPut;
 import com.project.usermanager.dto.response.CarResponseDTO;
-import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.model.CarEntity;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ public class CarMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(CarMapper.class);
 
-    public CarEntity toEntity(CarRequestDTOPost requestDTO) throws BadRequestException {
+    public CarEntity toEntity(CarRequestDTOPost requestDTO) {
 
         logger.info("toEntity - IN: {} ", requestDTO.toString());
 
@@ -66,7 +65,7 @@ public class CarMapper {
         return responseDTOList;
     }
 
-    public CarEntity editCar(CarRequestDTOPut requestDTO, CarEntity car) throws BadRequestException {
+    public CarEntity editCar(CarRequestDTOPut requestDTO, CarEntity car) {
 
         logger.info("editCar - IN: {}, {} ", requestDTO.toString(), car.toString());
 

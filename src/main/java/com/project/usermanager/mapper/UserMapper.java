@@ -14,6 +14,7 @@ import com.project.usermanager.dto.request.user.UserRequestDTOPut;
 import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.model.UserEntity;
+import com.project.usermanager.util.PasswordUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +39,8 @@ public class UserMapper {
 
         // Password control
         if (requestDTO.getPassword().equals(requestDTO.getConfirmPassword())) {
-            user.setPassword(requestDTO.getPassword());
+            String encryptedPassword = PasswordUtil.encryptPassword(requestDTO.getPassword());
+            user.setPassword(encryptedPassword);
         }
         else {
             throw new BadRequestException("The passwords entered are not the same!");

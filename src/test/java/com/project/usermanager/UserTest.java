@@ -1,6 +1,7 @@
 package com.project.usermanager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.project.usermanager.controller.UserRegistryController;
@@ -73,6 +75,7 @@ class UserTest {
             .gender("M")
             .lastName("lastname")
             .name("name")
+            .id(new ObjectId())
         .build();
 
         optionalUser = Optional.of(user);
@@ -85,8 +88,9 @@ class UserTest {
     void createUserRegistry() throws BadRequestException, ConflictException {
 
         when(repository.findByFiscalCode(anyString())).thenReturn(emptyOptionalUser);
+        when(repository.save(any(UserEntity.class))).thenReturn(optionalUser.get());
         ResponseEntity<UserRegistryResponseDTO> result = controller.createUserRegistry(requestDTOPost);
-        assertEquals(requestDTOPost.getName(), result.getBody().getName());
+        assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
 
     @Test
@@ -94,21 +98,23 @@ class UserTest {
 
         when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
         ResponseEntity<UserRegistryResponseDTO> result = controller.findUserRegistry("fiscalcode");
-        assertEquals("fiscalcode", result.getBody().getFiscalCode());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
     void editUserRegistry() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
-        controller.editUserRegistry(requestDTOPut, "fiscalcode");
+        when(repository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(optionalUser);
+        ResponseEntity<String> result = controller.editUserRegistry(requestDTOPut, "fiscalcode", "passwd");
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 
     @Test 
     void deleteUserRegistry() throws NotFoundException {
 
-        when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
-        controller.deleteUserRegistry("fiscalcode");
+        when(repository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(optionalUser);
+        ResponseEntity<String> result = controller.deleteUserRegistry("fiscalcode", "passwd");
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
     
 }

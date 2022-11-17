@@ -56,11 +56,11 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     }
 
     @Override
-    public ResponseEntity<String> editUserRegistry(@Valid UserRequestDTOPut requestDTO, String fiscalCode) throws BadRequestException, NotFoundException {
+    public ResponseEntity<String> editUserRegistry(@Valid UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException {
         
         logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
 
-        service.editUserRegistry(requestDTO, fiscalCode);
+        service.editUserRegistry(requestDTO, fiscalCode, password);
         ResponseEntity<String> response = new ResponseEntity<>("EDITED", HttpStatus.NO_CONTENT);
 
         logger.info("editUser - OUT: {} ", response.toString());
@@ -68,11 +68,11 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     }
 
     @Override
-    public ResponseEntity<String> deleteUserRegistry(String fiscalCode) throws NotFoundException {
+    public ResponseEntity<String> deleteUserRegistry(String fiscalCode, String password) throws NotFoundException {
         
         logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
 
-        service.deleteUserRegistry(fiscalCode);
+        service.deleteUserRegistry(fiscalCode, password);
         ResponseEntity<String> response = new ResponseEntity<>("DELETED", HttpStatus.NO_CONTENT);
 
         logger.info("deleteUser - OUT: {} ", response.toString());
