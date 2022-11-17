@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
@@ -43,6 +44,7 @@ class UserRegistryTest {
     private UserRequestDTOPut requestDTOPut;
     private Optional<UserEntity> optionalUser;
     private Optional<UserEntity> emptyOptionalUser;
+    private List<UserEntity> usersList;
 
     @BeforeEach
     void setup() throws BadRequestException {
@@ -82,6 +84,8 @@ class UserRegistryTest {
 
         emptyOptionalUser = Optional.empty();
 
+        usersList = List.of(user);
+
     }
 
     @Test
@@ -98,6 +102,14 @@ class UserRegistryTest {
 
         when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
         ResponseEntity<UserRegistryResponseDTO> result = controller.findUserRegistry("fiscalcode");
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void findAll() {
+
+        when(repository.findAll()).thenReturn(usersList);
+        ResponseEntity<List<UserRegistryResponseDTO>> result = controller.findAllUserRegistry();
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 

@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
@@ -49,6 +50,7 @@ class CarTest {
     private Optional<CarEntity> optionalCar;
     private Optional<CarEntity> emptyOptionalCar;
     private Optional<UserEntity> ownerOptional;
+    private List<CarEntity> carsList;
 
     @BeforeEach
     void setup() throws BadRequestException {
@@ -81,6 +83,8 @@ class CarTest {
 
         emptyOptionalCar = Optional.empty();
 
+        carsList = List.of(car);
+
         UserEntity user = UserEntity.builder()
             .birthDate(LocalDate.now())
             .password("passwd")
@@ -111,6 +115,23 @@ class CarTest {
 
         when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
         ResponseEntity<CarResponseDTO> result = controller.findCar("licenseplate");
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void findAll() throws NotFoundException {
+
+        when(repository.findAll()).thenReturn(carsList);
+        ResponseEntity<List<CarResponseDTO>> result = controller.findAll(null);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void findAllByOwner() throws NotFoundException {
+
+        when(userRepository.findByFiscalCode(anyString())).thenReturn(ownerOptional);
+        when(repository.findAllByOwnerFiscalCode(anyString())).thenReturn(carsList);
+        ResponseEntity<List<CarResponseDTO>> result = controller.findAll("fiscalcode");
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
