@@ -116,7 +116,7 @@ public class CarServiceImpl implements CarService {
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
         // Control if user with input FiscalCode and Password exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(requestDTO.getOwnerFiscalCode(), encryptedPassword);
+        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
         if (owner.isEmpty()) {
             logger.info("editCar - OUT: NotFoundException ");
             throw new NotFoundException("Owner not found!");
