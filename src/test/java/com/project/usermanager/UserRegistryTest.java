@@ -32,7 +32,7 @@ import com.project.usermanager.service.UserRegistryService;
 import com.project.usermanager.service.impl.UserRegistryServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
-class UserTest {
+class UserRegistryTest {
 
     @Mock
     private UserRepository repository;

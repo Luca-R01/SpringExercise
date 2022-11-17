@@ -118,6 +118,21 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+						<configuration>
+							<outputDirectory>target/jacoco</outputDirectory>
+							<excludes>
+								<exclude>com/project/usermanager/*</exclude>
+								<exclude>com/project/usermanager/model/*</exclude>
+
+								<exclude>com/project/usermanager/dto/*</exclude>
+								<exclude>com/project/usermanager/dto/request/*</exclude>
+								<exclude>com/project/usermanager/dto/request/user/*</exclude>
+								<exclude>com/project/usermanager/dto/request/car/*</exclude>
+								<exclude>com/project/usermanager/dto/response/*</exclude>
+
+								<exclude>com/project/usermanager/exception/*</exclude>
+							</excludes>
+						</configuration>
                     </execution>
                 </executions>
             </plugin>

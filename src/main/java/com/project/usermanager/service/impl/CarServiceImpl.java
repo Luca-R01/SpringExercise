@@ -44,7 +44,7 @@ public class CarServiceImpl implements CarService {
 
         logger.info("createCar - IN: {} ", requestDTO.toString());
 
-        // Control if car already exists
+        // Control if Car already exists
         Optional<CarEntity> findCar = repository.findByLicensePlate(requestDTO.getLicensePlate());
         if (findCar.isPresent()) {
             logger.info("createCar - OUT: ConflictException ");
@@ -52,7 +52,7 @@ public class CarServiceImpl implements CarService {
         }
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
-        // Control if user with input FiscalCode and Password exists
+        // Control if User with input FiscalCode and Password exists
         Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(requestDTO.getOwnerFiscalCode(), encryptedPassword);
         if (owner.isEmpty()) {
             logger.info("createCar - OUT: NotFoundException ");
@@ -71,7 +71,7 @@ public class CarServiceImpl implements CarService {
 
         logger.info("findCar - IN: licensePlate({}) ", licensePlate);
         
-        // Find car
+        // Find Car
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
             logger.info("findCar - OUT: NotFoundException ");
@@ -88,7 +88,7 @@ public class CarServiceImpl implements CarService {
 
         logger.info("findAllByOwner - IN: ownerFiscalCode({}) ", ownerFiscalCode);
 
-        // Control if user with input FiscalCode exists
+        // Control if User with input FiscalCode exists
         Optional<UserEntity> owner = userRepository.findByFiscalCode(ownerFiscalCode);
         if (owner.isEmpty()) {
             logger.info("findAllByOwner - OUT: NotFoundException ");
@@ -107,7 +107,7 @@ public class CarServiceImpl implements CarService {
 
         logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
         
-        // Find car
+        // Find Car
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
             logger.info("editCar - OUT: NotFoundException ");
@@ -115,7 +115,7 @@ public class CarServiceImpl implements CarService {
         }
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
-        // Control if user with input FiscalCode and Password exists
+        // Control if User with input FiscalCode and Password exists
         Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
         if (owner.isEmpty()) {
             logger.info("editCar - OUT: NotFoundException ");
@@ -133,7 +133,7 @@ public class CarServiceImpl implements CarService {
         
         logger.info("deleteCar - IN: licensePlate({}) ", licensePlate);
 
-        // Find car
+        // Find Car
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
             logger.info("deleteCar - OUT: NotFoundException ");
@@ -141,7 +141,7 @@ public class CarServiceImpl implements CarService {
         }
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
-        // Control if user with input FiscalCode and Password exists
+        // Control if User with input FiscalCode and Password exists
         Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
         if (owner.isEmpty()) {
             logger.info("deleteCar - OUT: NotFoundException ");
@@ -157,7 +157,7 @@ public class CarServiceImpl implements CarService {
 
         logger.info("findAll - IN: none ");
         
-        // Find car
+        // Find Cars
         List<CarEntity> carList = repository.findAll();
         List<CarResponseDTO> response = mapper.toDTOList(carList);
 

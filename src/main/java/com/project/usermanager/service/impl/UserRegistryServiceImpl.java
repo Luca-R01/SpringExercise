@@ -39,11 +39,13 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
         logger.info("createUser - IN: {} ", requestDTO.toString());
 
+        // Control if User already exists
         Optional<UserEntity> findUser = repository.findByFiscalCode(requestDTO.getFiscalCode());
         if (findUser.isPresent()) {
             logger.info("createUser - OUT: ConflictException ");
             throw new ConflictException("User alredy exixts!");
         }
+        // Create User
         UserEntity user = mapper.toEntity(requestDTO);
         user = repository.save(user);
 
@@ -55,6 +57,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
         logger.info("findUser - IN: fiscalCode({}) ", fiscalCode);
 
+        // Find User
         Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
         if (user.isEmpty()) {
             logger.info("findUser - OUT: NotFoundException ");
@@ -71,12 +74,15 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
         logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
         
+        // Encrypt Password
         String encryptedPassword = PasswordUtil.encryptPassword(password);
+        //Control if User with input FiscalCode and Password exists
         Optional<UserEntity> user = repository.findByFiscalCodeAndPassword(fiscalCode, encryptedPassword);
         if (user.isEmpty()) {
             logger.info("editUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
+        // Edit User
         UserEntity editUser = mapper.editUser(requestDTO, user.get());
         repository.save(editUser);
 
@@ -88,12 +94,15 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
         logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
 
+        // Encrypt Password
         String encryptedPassword = PasswordUtil.encryptPassword(password);
+        //Control if User with input FiscalCode and Password exists
         Optional<UserEntity> user = repository.findByFiscalCodeAndPassword(fiscalCode, encryptedPassword);
         if (user.isEmpty()) {
             logger.info("deleteUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
+        // Delete User
         repository.delete(user.get());
 
         logger.info("deleteUser - OUT: {} ", user.get().toString());
@@ -104,6 +113,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
         logger.info("findAll - IN: none ");
 
+        // Find Users
         List<UserEntity> userList = repository.findAll();
         List<UserRegistryResponseDTO> response = mapper.toDTOList(userList);
         
