@@ -2,8 +2,6 @@ package com.project.usermanager.controller.impl;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,7 @@ public class CarControllerImpl implements CarController {
     private static final Logger logger = LoggerFactory.getLogger(CarControllerImpl.class);
 
     @Override
-    public ResponseEntity<CarResponseDTO> createCar(@Valid CarRequestDTOPost requestDTO, String password) throws BadRequestException, ConflictException, NotFoundException {
+    public ResponseEntity<CarResponseDTO> createCar(CarRequestDTOPost requestDTO, String password) throws BadRequestException, ConflictException, NotFoundException {
         
         logger.info("createCar - IN: {} ", requestDTO.toString());
 

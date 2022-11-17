@@ -2,8 +2,6 @@ package com.project.usermanager.controller.impl;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,7 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     private static final Logger logger = LoggerFactory.getLogger(UserRegistryControllerImpl.class);
 
     @Override
-    public ResponseEntity<UserRegistryResponseDTO> createUserRegistry(@Valid UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
+    public ResponseEntity<UserRegistryResponseDTO> createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
 
         logger.info("createUser - IN: {} ", requestDTO.toString());
 
@@ -56,7 +54,7 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     }
 
     @Override
-    public ResponseEntity<String> editUserRegistry(@Valid UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException {
+    public ResponseEntity<String> editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException {
         
         logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
 
