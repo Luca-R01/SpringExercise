@@ -112,7 +112,7 @@ class CarTest {
     @Test
     void createCar() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(userRepository.findByFiscalCode(anyString())).thenReturn(ownerOptional);
+        when(userRepository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
         when(repository.save(any(CarEntity.class))).thenReturn(optionalCar.get());
         ResponseEntity<CarResponseDTO> result = controller.createCar(requestDTOPost, "passwd");
@@ -147,7 +147,7 @@ class CarTest {
     @Test
     void editCar() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(userRepository.findByFiscalCode(anyString())).thenReturn(ownerOptional);
+        when(userRepository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
         ResponseEntity<String> result = controller.editCar(requestDTOPut, "licenseplate", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
@@ -156,7 +156,7 @@ class CarTest {
     @Test 
     void deleteCar() throws NotFoundException, BadRequestException {
 
-        when(userRepository.findByFiscalCode(anyString())).thenReturn(ownerOptional);
+        when(userRepository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
         ResponseEntity<String> result = controller.deleteCar("licenseplate", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());

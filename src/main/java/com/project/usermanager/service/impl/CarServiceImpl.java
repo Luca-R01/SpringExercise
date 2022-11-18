@@ -52,19 +52,12 @@ public class CarServiceImpl implements CarService {
             throw new ConflictException("Car alredy exists!");
         }
 
-        // Control if User with input FiscalCode exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCode(requestDTO.getOwnerFiscalCode());
-        if (owner.isEmpty()) {
-
-            logger.info("createCar - OUT: NotFoundException ");
-            throw new NotFoundException("User not found!");
-        }
-
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
 
         // Control if input Password is correct
-        if (! owner.get().getPassword().equals(encryptedPassword)) {
+        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(requestDTO.getOwnerFiscalCode(), encryptedPassword);
+        if (owner.isEmpty()) {
 
             logger.info("createCar - OUT: BadRequestException ");
             throw new BadRequestException("Password is not correct!");
@@ -129,14 +122,6 @@ public class CarServiceImpl implements CarService {
             throw new NotFoundException("Car not found!");
         }
 
-        // Control if User with input FiscalCode exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCode(car.get().getOwnerFiscalCode());
-        if (owner.isEmpty()) {
-
-            logger.info("createCar - OUT: NotFoundException ");
-            throw new NotFoundException("User not found!");
-        }
-
         // Control if LicensePlate in DTO Not Exists
         if (requestDTO.getLicensePlate() != null) {
 
@@ -152,7 +137,8 @@ public class CarServiceImpl implements CarService {
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
 
         // Control if input Password is correct
-        if (! owner.get().getPassword().equals(encryptedPassword)) {
+        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
+        if (owner.isEmpty()) {
 
             logger.info("createCar - OUT: BadRequestException ");
             throw new BadRequestException("Password is not correct!");
@@ -178,18 +164,12 @@ public class CarServiceImpl implements CarService {
             throw new NotFoundException("Car not found!");
         }
 
-        // Control if User with input FiscalCode exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCode(car.get().getOwnerFiscalCode());
-        if (owner.isEmpty()) {
-
-            logger.info("createCar - OUT: NotFoundException ");
-            throw new NotFoundException("User not found!");
-        }
-
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
 
-        if (! owner.get().getPassword().equals(encryptedPassword)) {
+        // Control if input Password is correct
+        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
+        if (owner.isEmpty()) {
 
             logger.info("createCar - OUT: BadRequestException ");
             throw new BadRequestException("Password is not correct!");

@@ -12,5 +12,7 @@ import com.project.usermanager.model.UserEntity;
 public interface UserRepository extends MongoRepository<UserEntity, ObjectId> {
 
     public Optional<UserEntity> findByFiscalCode(String fiscalCode);
+
+    public Optional<UserEntity> findByFiscalCodeAndPassword(String fiscalCode, String password);
     
 }
