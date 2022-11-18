@@ -77,7 +77,7 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    public ResponseEntity<String> editCar(CarRequestDTOPut requestDTO, String licensePlate, String password) throws BadRequestException, NotFoundException {
+    public ResponseEntity<String> editCar(CarRequestDTOPut requestDTO, String licensePlate, String password) throws BadRequestException, NotFoundException, ConflictException {
         
         logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
 

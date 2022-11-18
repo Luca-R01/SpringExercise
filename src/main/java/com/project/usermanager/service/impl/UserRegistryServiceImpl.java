@@ -74,7 +74,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     }
 
     @Override
-    public void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException {
+    public void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException, ConflictException {
 
         logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
 
@@ -84,6 +84,17 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
             logger.info("editUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
+        }
+
+        // Control if FiscalCode in DTO Not Exists
+        if (requestDTO.getFiscalCode() != null) {
+
+            Optional<UserEntity> check = repository.findByFiscalCode(requestDTO.getFiscalCode());
+            if (check.isPresent()) {
+
+                logger.info("editUser - OUT: ConflictException ");
+                throw new ConflictException("User with input FiscalCode alredy Exists!");
+            }
         }
         
         // Encrypt Password

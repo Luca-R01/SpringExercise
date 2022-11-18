@@ -15,7 +15,7 @@ public interface UserRegistryService {
 
     UserRegistryResponseDTO findUserRegistry(String fiscalCode) throws NotFoundException;
 
-    void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException;
+    void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException, ConflictException;
 
     void deleteUserRegistry(String fiscalCode, String password) throws NotFoundException, BadRequestException;
 

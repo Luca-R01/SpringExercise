@@ -49,7 +49,7 @@ public interface CarController {
         @RequestBody @Valid CarRequestDTOPut requestDTO, 
         @PathVariable String licensePlate,
         @PathVariable String password
-    ) throws BadRequestException, NotFoundException;
+    ) throws BadRequestException, NotFoundException, ConflictException;
 
     @DeleteMapping("/api/car/{licensePlate}/owner/{password}")
     @ResponseStatus(code = HttpStatus.CONTINUE, value = HttpStatus.CONTINUE)

@@ -117,7 +117,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void editCar(CarRequestDTOPut requestDTO, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException {
+    public void editCar(CarRequestDTOPut requestDTO, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException, ConflictException {
 
         logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
         
@@ -135,6 +135,17 @@ public class CarServiceImpl implements CarService {
 
             logger.info("createCar - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
+        }
+
+        // Control if LicensePlate in DTO Not Exists
+        if (requestDTO.getLicensePlate() != null) {
+
+            Optional<CarEntity> check = repository.findByLicensePlate(requestDTO.getLicensePlate());
+            if (check.isPresent()) {
+
+                logger.info("editCar - OUT: ConflictException ");
+                throw new ConflictException("Car with input LicensePlate alredy Exists!");
+            }
         }
 
         // Encrypt password

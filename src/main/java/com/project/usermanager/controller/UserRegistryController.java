@@ -41,7 +41,7 @@ public interface UserRegistryController {
         @RequestBody @Valid UserRequestDTOPut requestDTO, 
         @PathVariable String fiscalCode,
         @PathVariable String password
-    ) throws BadRequestException, NotFoundException;
+    ) throws BadRequestException, NotFoundException, ConflictException;
 
     @DeleteMapping("/api/user/registry/{fiscalCode}/{password}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT, value = HttpStatus.NO_CONTENT)
