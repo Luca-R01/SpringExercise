@@ -108,9 +108,6 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
         logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
 
-        // Encrypt Password
-        String encryptedPassword = PasswordUtil.encryptPassword(password);
-
         // Control if User with input FiscalCode exists
         Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
         if (user.isEmpty()) {
@@ -118,6 +115,9 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             logger.info("deleteUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
+
+        // Encrypt Password
+        String encryptedPassword = PasswordUtil.encryptPassword(password);
 
         // Control if input Password is correct
         if (! user.get().getPassword().equals(encryptedPassword)) {

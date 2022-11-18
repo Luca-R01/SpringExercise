@@ -111,7 +111,7 @@ public class UserMapper {
             if (!requestDTO.getPassword().equals(requestDTO.getConfirmPassword())) {
                 throw new BadRequestException("The passwords entered are not the same!");
             }
-            user.setPassword(requestDTO.getPassword());
+            user.setPassword(PasswordUtil.encryptPassword(requestDTO.getPassword()));
         }
 
         logger.info("editUser - OUT: {} ", user.toString());
