@@ -20,8 +20,8 @@ public class CarEntity {
     @Id
     private ObjectId id;
 
-    @Field("OWNER_FISCAL_CODE")
-    private String ownerFiscalCode;
+    @Field("OWNER_USERNAME")
+    private String ownerUsername;
 
     @Field("LICENSE_PLATE")
     private String licensePlate;

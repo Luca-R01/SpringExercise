@@ -40,7 +40,7 @@ public interface CarController {
     @GetMapping("/api/car")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
     ResponseEntity<List<CarResponseDTO>> findAll (
-        @RequestParam(required = false) String ownerFiscalCode
+        @RequestParam(required = false) String ownerUsername
     ) throws NotFoundException;
 
     @PutMapping("/api/car/{licensePlate}/owner/{password}")

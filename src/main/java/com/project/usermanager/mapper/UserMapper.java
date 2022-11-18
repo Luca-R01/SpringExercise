@@ -31,7 +31,7 @@ public class UserMapper {
         UserEntity user = UserEntity.builder()
             .birthDate(requestDTO.getBirthDate())
             .email(requestDTO.getEmail())
-            .fiscalCode(requestDTO.getFiscalCode())
+            .username(requestDTO.getUsername())
             .gender(requestDTO.getGender())
             .lastName(requestDTO.getLastName())
             .name(requestDTO.getName())
@@ -57,7 +57,7 @@ public class UserMapper {
             .age(Period.between(user.getBirthDate(), LocalDate.now()).getYears())
             .email(user.getEmail())
             .birthDate(user.getBirthDate())
-            .fiscalCode(user.getFiscalCode())
+            .username(user.getUsername())
             .gender(user.getGender())
             .id(user.getId().toString())
             .lastName(user.getLastName())
@@ -91,11 +91,11 @@ public class UserMapper {
         if (requestDTO.getEmail() != null) {
             user.setEmail(requestDTO.getEmail());
         }
-        if (requestDTO.getFiscalCode() != null) {
-            user.setFiscalCode(requestDTO.getFiscalCode());
+        if (requestDTO.getUsername() != null) {
+            user.setUsername(requestDTO.getUsername());
         }
-        if (requestDTO.getFiscalCode() != null) {
-            user.setFiscalCode(requestDTO.getFiscalCode());
+        if (requestDTO.getUsername() != null) {
+            user.setUsername(requestDTO.getUsername());
         }
         if (requestDTO.getGender() != null) {
             user.setGender(requestDTO.getGender());

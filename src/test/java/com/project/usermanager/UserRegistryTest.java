@@ -67,7 +67,7 @@ class UserRegistryTest {
             .confirmPassword("passwd")
             .password("passwd")
             .email("email@email.it")
-            .fiscalCode("fiscalcode")
+            .username("username")
             .gender("M")
             .lastName("lastname")
             .name("name")
@@ -81,7 +81,7 @@ class UserRegistryTest {
             .birthDate(LocalDate.now())
             .password(PasswordUtil.encryptPassword("passwd"))
             .email("email@email.it")
-            .fiscalCode("fiscalcode")
+            .username("username")
             .gender("M")
             .lastName("lastname")
             .name("name")
@@ -99,7 +99,7 @@ class UserRegistryTest {
     @Test
     void createUserRegistry() throws BadRequestException, ConflictException {
 
-        when(repository.findByFiscalCode(anyString())).thenReturn(emptyOptionalUser);
+        when(repository.findByUsername(anyString())).thenReturn(emptyOptionalUser);
         when(repository.save(any(UserEntity.class))).thenReturn(optionalUser.get());
         ResponseEntity<UserRegistryResponseDTO> result = controller.createUserRegistry(requestDTOPost);
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
@@ -108,8 +108,8 @@ class UserRegistryTest {
     @Test
     void findUserRegistry() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
-        ResponseEntity<UserRegistryResponseDTO> result = controller.findUserRegistry("fiscalcode");
+        when(repository.findByUsername(anyString())).thenReturn(optionalUser);
+        ResponseEntity<UserRegistryResponseDTO> result = controller.findUserRegistry("username");
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
@@ -124,16 +124,16 @@ class UserRegistryTest {
     @Test
     void editUserRegistry() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
-        ResponseEntity<String> result = controller.editUserRegistry(requestDTOPut, "fiscalcode", "passwd");
+        when(repository.findByUsername(anyString())).thenReturn(optionalUser);
+        ResponseEntity<String> result = controller.editUserRegistry(requestDTOPut, "username", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 
     @Test 
     void deleteUserRegistry() throws NotFoundException, BadRequestException {
 
-        when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
-        ResponseEntity<String> result = controller.deleteUserRegistry("fiscalcode", "passwd");
+        when(repository.findByUsername(anyString())).thenReturn(optionalUser);
+        ResponseEntity<String> result = controller.deleteUserRegistry("username", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
     

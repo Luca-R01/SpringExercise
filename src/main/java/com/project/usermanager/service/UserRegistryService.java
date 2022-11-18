@@ -13,11 +13,11 @@ public interface UserRegistryService {
 
     UserRegistryResponseDTO createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException;
 
-    UserRegistryResponseDTO findUserRegistry(String fiscalCode) throws NotFoundException;
+    UserRegistryResponseDTO findUserRegistry(String username) throws NotFoundException;
 
-    void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException, ConflictException;
+    void editUserRegistry(UserRequestDTOPut requestDTO, String username, String password) throws BadRequestException, NotFoundException, ConflictException;
 
-    void deleteUserRegistry(String fiscalCode, String password) throws NotFoundException, BadRequestException;
+    void deleteUserRegistry(String username, String password) throws NotFoundException, BadRequestException;
 
     List<UserRegistryResponseDTO> findAllUserRegistry();
     

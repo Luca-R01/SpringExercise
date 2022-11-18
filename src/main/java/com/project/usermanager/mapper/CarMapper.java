@@ -28,7 +28,7 @@ public class CarMapper {
             .brand(requestDTO.getBrand())
             .licensePlate(requestDTO.getLicensePlate())
             .model(requestDTO.getModel())
-            .ownerFiscalCode(requestDTO.getOwnerFiscalCode())
+            .ownerUsername(requestDTO.getOwnerUsername())
         .build();
 
         logger.info("toEntity - OUT: {} ", car.toString());
@@ -45,7 +45,7 @@ public class CarMapper {
             .id(car.getId().toString())
             .licensePlate(car.getLicensePlate())
             .model(car.getModel())
-            .ownerFiscalCode(car.getOwnerFiscalCode())
+            .ownerUsername(car.getOwnerUsername())
         .build();
 
         logger.info("toDTO - OUT: {} ", responseDTO.toString());
@@ -78,8 +78,8 @@ public class CarMapper {
         if (requestDTO.getModel() != null){
             car.setModel(requestDTO.getModel());
         }
-        if (requestDTO.getOwnerFiscalCode() != null) {
-            car.setOwnerFiscalCode(requestDTO.getOwnerFiscalCode());
+        if (requestDTO.getOwnerUsername() != null) {
+            car.setOwnerUsername(requestDTO.getOwnerUsername());
         }
       
         logger.info("editCar - OUT: {} ", car.toString());

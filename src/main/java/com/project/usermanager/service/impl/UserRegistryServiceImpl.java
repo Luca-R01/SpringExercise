@@ -40,7 +40,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         logger.info("createUser - IN: {} ", requestDTO.toString());
 
         // Control if User already exists
-        Optional<UserEntity> findUser = repository.findByFiscalCode(requestDTO.getFiscalCode());
+        Optional<UserEntity> findUser = repository.findByUsername(requestDTO.getUsername());
         if (findUser.isPresent()) {
 
             logger.info("createUser - OUT: ConflictException ");
@@ -55,12 +55,12 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         return mapper.toDTO(user);
     }
 
-    public UserRegistryResponseDTO findUserRegistry(String fiscalCode) throws NotFoundException {
+    public UserRegistryResponseDTO findUserRegistry(String username) throws NotFoundException {
 
-        logger.info("findUser - IN: fiscalCode({}) ", fiscalCode);
+        logger.info("findUser - IN: username({}) ", username);
 
         // Find User
-        Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
+        Optional<UserEntity> user = repository.findByUsername(username);
         if (user.isEmpty()) {
 
             logger.info("findUser - OUT: NotFoundException ");
@@ -74,26 +74,29 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     }
 
     @Override
-    public void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException, ConflictException {
+    public void editUserRegistry(UserRequestDTOPut requestDTO, String username, String password) throws BadRequestException, NotFoundException, ConflictException {
 
-        logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
+        logger.info("editUser - IN: {}, username({}) ", requestDTO.toString(), username);
 
-        // Control if User with input FiscalCode exists
-        Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
+        // Control if User with input Username exists
+        Optional<UserEntity> user = repository.findByUsername(username);
         if (user.isEmpty()) {
 
             logger.info("editUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
 
-        // Control if FiscalCode in DTO Not Exists
-        if (requestDTO.getFiscalCode() != null) {
+        // Control if Username in DTO Not Exists
+        if (requestDTO.getUsername() != null) {
 
-            Optional<UserEntity> check = repository.findByFiscalCode(requestDTO.getFiscalCode());
-            if (check.isPresent()) {
+            if (! requestDTO.getUsername().equals(user.get().getUsername())) {
 
-                logger.info("editUser - OUT: ConflictException ");
-                throw new ConflictException("User with input FiscalCode alredy Exists!");
+                Optional<UserEntity> check = repository.findByUsername(requestDTO.getUsername());
+                if (check.isPresent()) {
+
+                    logger.info("editUser - OUT: ConflictException ");
+                    throw new ConflictException("User with input Username alredy Exists!");
+                }
             }
         }
         
@@ -115,12 +118,12 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     }
 
     @Override
-    public void deleteUserRegistry(String fiscalCode, String password) throws NotFoundException, BadRequestException {
+    public void deleteUserRegistry(String username, String password) throws NotFoundException, BadRequestException {
 
-        logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
+        logger.info("deleteUser - IN: username({}) ", username);
 
-        // Control if User with input FiscalCode exists
-        Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
+        // Control if User with input Username exists
+        Optional<UserEntity> user = repository.findByUsername(username);
         if (user.isEmpty()) {
 
             logger.info("deleteUser - OUT: NotFoundException ");

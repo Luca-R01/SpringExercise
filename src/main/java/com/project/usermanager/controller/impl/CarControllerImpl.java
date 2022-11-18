@@ -54,10 +54,10 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    public ResponseEntity<List<CarResponseDTO>> findAll(String ownerFiscalCode) throws NotFoundException {
+    public ResponseEntity<List<CarResponseDTO>> findAll(String ownerUsername) throws NotFoundException {
 
-        if (ownerFiscalCode == null) {
-            logger.info("findAll - IN: ownerFiscalCode(NULL) ");
+        if (ownerUsername == null) {
+            logger.info("findAll - IN: ownerUsername(NULL) ");
 
             List<CarResponseDTO> responseDTO = service.findAll();
             ResponseEntity<List<CarResponseDTO>> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
@@ -66,9 +66,9 @@ public class CarControllerImpl implements CarController {
             return response;
         }
         else {
-            logger.info("findAll - IN: ownerFiscalCode({}) ", ownerFiscalCode);
+            logger.info("findAll - IN: ownerUsername({}) ", ownerUsername);
 
-            List<CarResponseDTO> responseDTO = service.findAllByOwner(ownerFiscalCode);
+            List<CarResponseDTO> responseDTO = service.findAllByOwner(ownerUsername);
             ResponseEntity<List<CarResponseDTO>> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
             logger.info("findAll - OUT: {} ", response.toString());

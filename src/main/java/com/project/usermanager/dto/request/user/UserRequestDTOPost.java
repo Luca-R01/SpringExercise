@@ -21,8 +21,8 @@ import lombok.ToString;
 public class UserRequestDTOPost {
 
     @NotBlank
-    @JsonProperty("FISCAL_CODE")
-    private String fiscalCode;
+    @JsonProperty("USERNAME")
+    private String username;
 
     @NotBlank
     @JsonProperty("NAME")

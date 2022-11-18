@@ -56,7 +56,7 @@ public class CarServiceImpl implements CarService {
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
 
         // Control if input Password is correct
-        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(requestDTO.getOwnerFiscalCode(), encryptedPassword);
+        Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(requestDTO.getOwnerUsername(), encryptedPassword);
         if (owner.isEmpty()) {
 
             logger.info("createCar - OUT: BadRequestException ");
@@ -90,19 +90,19 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarResponseDTO> findAllByOwner(String ownerFiscalCode) throws NotFoundException {
+    public List<CarResponseDTO> findAllByOwner(String ownerUsername) throws NotFoundException {
 
-        logger.info("findAllByOwner - IN: ownerFiscalCode({}) ", ownerFiscalCode);
+        logger.info("findAllByOwner - IN: ownerUsername({}) ", ownerUsername);
 
-        // Control if User with input FiscalCode exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCode(ownerFiscalCode);
+        // Control if User with input Username exists
+        Optional<UserEntity> owner = userRepository.findByUsername(ownerUsername);
         if (owner.isEmpty()) {
 
             logger.info("findAllByOwner - OUT: NotFoundException ");
             throw new NotFoundException("Owner Not Found");
         }
         // Find car
-        List<CarEntity> carList = repository.findAllByOwnerFiscalCode(ownerFiscalCode);
+        List<CarEntity> carList = repository.findAllByOwnerUsername(ownerUsername);
         List<CarResponseDTO> response = mapper.toDTOList(carList);
 
         logger.info("findAllByOwner - OUT: {} ", response.toString());
@@ -125,11 +125,14 @@ public class CarServiceImpl implements CarService {
         // Control if LicensePlate in DTO Not Exists
         if (requestDTO.getLicensePlate() != null) {
 
-            Optional<CarEntity> check = repository.findByLicensePlate(requestDTO.getLicensePlate());
-            if (check.isPresent()) {
+            if (! requestDTO.getLicensePlate().equals(car.get().getLicensePlate())) {
 
-                logger.info("editCar - OUT: ConflictException ");
-                throw new ConflictException("Car with input LicensePlate alredy Exists!");
+                Optional<CarEntity> check = repository.findByLicensePlate(requestDTO.getLicensePlate());
+                if (check.isPresent()) {
+
+                    logger.info("editCar - OUT: ConflictException ");
+                    throw new ConflictException("Car with input LicensePlate alredy Exists!");
+                }
             }
         }
 
@@ -137,7 +140,7 @@ public class CarServiceImpl implements CarService {
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
 
         // Control if input Password is correct
-        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
+        Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(car.get().getOwnerUsername(), encryptedPassword);
         if (owner.isEmpty()) {
 
             logger.info("createCar - OUT: BadRequestException ");
@@ -168,7 +171,7 @@ public class CarServiceImpl implements CarService {
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
 
         // Control if input Password is correct
-        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
+        Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(car.get().getOwnerUsername(), encryptedPassword);
         if (owner.isEmpty()) {
 
             logger.info("createCar - OUT: BadRequestException ");

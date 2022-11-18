@@ -18,8 +18,8 @@ public class UserRegistryResponseDTO {
     @JsonProperty("ID")
     private String id;
 
-    @JsonProperty("FISCAL_CODE")
-    private String fiscalCode;
+    @JsonProperty("USERNAME")
+    private String username;
 
     @JsonProperty("NAME")
     private String name;

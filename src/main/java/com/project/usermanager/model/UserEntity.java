@@ -23,8 +23,8 @@ public class UserEntity {
     @Id
     private ObjectId id;
 
-    @Field("FISCAL_CODE")
-    private String fiscalCode;
+    @Field("USERNAME")
+    private String username;
 
     @Field("NAME")
     private String name;

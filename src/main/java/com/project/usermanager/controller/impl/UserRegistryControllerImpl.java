@@ -41,11 +41,11 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     }
 
     @Override
-    public ResponseEntity<UserRegistryResponseDTO> findUserRegistry(String fiscalCode) throws BadRequestException, ConflictException, NotFoundException {
+    public ResponseEntity<UserRegistryResponseDTO> findUserRegistry(String username) throws BadRequestException, ConflictException, NotFoundException {
         
-        logger.info("findUser - IN: fiscalCode({}) ", fiscalCode);
+        logger.info("findUser - IN: username({}) ", username);
 
-        UserRegistryResponseDTO responseDTO = service.findUserRegistry(fiscalCode);
+        UserRegistryResponseDTO responseDTO = service.findUserRegistry(username);
         ResponseEntity<UserRegistryResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
         logger.info("findUser - OUT: {} ", response.toString());
@@ -53,11 +53,11 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     }
 
     @Override
-    public ResponseEntity<String> editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException, ConflictException {
+    public ResponseEntity<String> editUserRegistry(UserRequestDTOPut requestDTO, String username, String password) throws BadRequestException, NotFoundException, ConflictException {
         
-        logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
+        logger.info("editUser - IN: {}, username({}) ", requestDTO.toString(), username);
 
-        service.editUserRegistry(requestDTO, fiscalCode, password);
+        service.editUserRegistry(requestDTO, username, password);
         ResponseEntity<String> response = new ResponseEntity<>("EDITED", HttpStatus.NO_CONTENT);
 
         logger.info("editUser - OUT: {} ", response.toString());
@@ -65,11 +65,11 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     }
 
     @Override
-    public ResponseEntity<String> deleteUserRegistry(String fiscalCode, String password) throws NotFoundException, BadRequestException {
+    public ResponseEntity<String> deleteUserRegistry(String username, String password) throws NotFoundException, BadRequestException {
         
-        logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
+        logger.info("deleteUser - IN: username({}) ", username);
 
-        service.deleteUserRegistry(fiscalCode, password);
+        service.deleteUserRegistry(username, password);
         ResponseEntity<String> response = new ResponseEntity<>("DELETED", HttpStatus.NO_CONTENT);
 
         logger.info("deleteUser - OUT: {} ", response.toString());

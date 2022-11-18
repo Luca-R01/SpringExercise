@@ -13,8 +13,8 @@ import lombok.ToString;
 @ToString
 public class CarRequestDTOPut {
 
-    @JsonProperty("OWNER_FISCAL_CODE")
-    private String ownerFiscalCode;
+    @JsonProperty("OWNER_USERNAME")
+    private String ownerUsername;
 
     @JsonProperty("LICENSE_PLATE")
     private String licensePlate;

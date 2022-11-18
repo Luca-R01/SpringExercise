@@ -16,8 +16,8 @@ import lombok.ToString;
 public class CarRequestDTOPost {
 
     @NotBlank
-    @JsonProperty("OWNER_FISCAL_CODE")
-    private String ownerFiscalCode;
+    @JsonProperty("OWNER_USERNAME")
+    private String ownerUsername;
 
     @NotBlank
     @JsonProperty("LICENSE_PLATE")

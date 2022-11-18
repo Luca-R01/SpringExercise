@@ -19,8 +19,8 @@ import lombok.ToString;
 @ToString
 public class UserRequestDTOPut {
 
-    @JsonProperty("FISCAL_CODE")
-    private String fiscalCode;
+    @JsonProperty("USERNAME")
+    private String username;
 
     @JsonProperty("NAME")
     private String name;

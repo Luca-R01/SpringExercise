@@ -35,18 +35,19 @@ public class UserFullServiceImpl implements UserFullService {
     private static final Logger logger = LoggerFactory.getLogger(UserFullServiceImpl.class);
 
     @Override
-    public UserFullResponseDTO findUser(String fiscalCode) throws NotFoundException {
+    public UserFullResponseDTO findUser(String username) throws NotFoundException {
         
-        logger.info("findUser - IN: fiscalCode({}) ", fiscalCode);
+        logger.info("findUser - IN: username({}) ", username);
 
         // Find User
-        Optional<UserEntity> userRegistry = userRepository.findByFiscalCode(fiscalCode);
+        Optional<UserEntity> userRegistry = userRepository.findByUsername(username);
         if (userRegistry.isEmpty()) {
+            
             logger.info("findUser - OUT: NotFoundException ");
             throw new NotFoundException("User Not Found!");
         }
         // Find User's Cars
-        List<CarEntity> carList = carRepository.findAllByOwnerFiscalCode(fiscalCode);
+        List<CarEntity> carList = carRepository.findAllByOwnerUsername(username);
 
         UserFullResponseDTO response = mapper.toDTO(userRegistry.get(), carList);
 

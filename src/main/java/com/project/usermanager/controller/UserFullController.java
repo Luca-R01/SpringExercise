@@ -11,10 +11,10 @@ import com.project.usermanager.exception.NotFoundException;
 
 public interface UserFullController {
     
-    @GetMapping("/api/user/{fiscalCode}")
+    @GetMapping("/api/user/{username}")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
     ResponseEntity<UserFullResponseDTO> findUser (
-        @PathVariable String fiscalCode
+        @PathVariable String username
     ) throws NotFoundException;
 
 }

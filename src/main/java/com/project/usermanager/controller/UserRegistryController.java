@@ -29,24 +29,24 @@ public interface UserRegistryController {
         @RequestBody @Valid UserRequestDTOPost requestDTO
     ) throws BadRequestException, ConflictException;
 
-    @GetMapping("/api/user/registry/{fiscalCode}")
+    @GetMapping("/api/user/registry/{username}")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
     ResponseEntity<UserRegistryResponseDTO> findUserRegistry (
-        @PathVariable String fiscalCode
+        @PathVariable String username
     ) throws BadRequestException, ConflictException, NotFoundException;
 
-    @PutMapping("/api/user/registry/{fiscalCode}/{password}")
+    @PutMapping("/api/user/registry/{username}/{password}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT, value = HttpStatus.NO_CONTENT)
     ResponseEntity<String> editUserRegistry (
         @RequestBody @Valid UserRequestDTOPut requestDTO, 
-        @PathVariable String fiscalCode,
+        @PathVariable String username,
         @PathVariable String password
     ) throws BadRequestException, NotFoundException, ConflictException;
 
-    @DeleteMapping("/api/user/registry/{fiscalCode}/{password}")
+    @DeleteMapping("/api/user/registry/{username}/{password}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT, value = HttpStatus.NO_CONTENT)
     ResponseEntity<String> deleteUserRegistry (
-        @PathVariable String fiscalCode,
+        @PathVariable String username,
         @PathVariable String password
     ) throws NotFoundException, BadRequestException;
 

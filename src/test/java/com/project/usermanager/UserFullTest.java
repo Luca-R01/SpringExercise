@@ -72,7 +72,7 @@ class UserFullTest {
             .birthDate(LocalDate.now())
             .password("passwd")
             .email("email@email.it")
-            .fiscalCode("fiscalcode")
+            .username("username")
             .gender("M")
             .lastName("lastname")
             .name("name")
@@ -85,7 +85,7 @@ class UserFullTest {
             .brand("brand")
             .licensePlate("licenseplate")
             .model("mode")
-            .ownerFiscalCode("fiscalcode")
+            .ownerUsername("username")
             .id(new ObjectId())
         .build();
 
@@ -96,9 +96,9 @@ class UserFullTest {
     @Test
     void findUser() throws NotFoundException {
 
-        when(userRepository.findByFiscalCode(anyString())).thenReturn(optionalUserRegistry);
-        when(carRepository.findAllByOwnerFiscalCode(anyString())).thenReturn(carsList);
-        ResponseEntity<UserFullResponseDTO> result = controller.findUser("fiscalcode");
+        when(userRepository.findByUsername(anyString())).thenReturn(optionalUserRegistry);
+        when(carRepository.findAllByOwnerUsername(anyString())).thenReturn(carsList);
+        ResponseEntity<UserFullResponseDTO> result = controller.findUser("username");
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
     

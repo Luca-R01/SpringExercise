@@ -15,7 +15,7 @@ public interface CarService {
 
     CarResponseDTO findCar(String licensePlate) throws NotFoundException;
 
-    List<CarResponseDTO> findAllByOwner(String ownerFiscalCode) throws NotFoundException;
+    List<CarResponseDTO> findAllByOwner(String ownerUsername) throws NotFoundException;
 
     void editCar(CarRequestDTOPut requestDTO, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException, ConflictException;
 

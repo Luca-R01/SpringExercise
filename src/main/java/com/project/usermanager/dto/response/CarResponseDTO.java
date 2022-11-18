@@ -16,8 +16,8 @@ public class CarResponseDTO {
     @JsonProperty("ID")
     private String id;
 
-    @JsonProperty("OWNER_FISCAL_CODE")
-    private String ownerFiscalCode;
+    @JsonProperty("OWNER_USERNAME")
+    private String ownerUsername;
 
     @JsonProperty("LICENSE_PLATE")
     private String licensePlate;

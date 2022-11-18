@@ -5,6 +5,6 @@ import com.project.usermanager.exception.NotFoundException;
 
 public interface UserFullService {
 
-    UserFullResponseDTO findUser(String fiscalCode) throws NotFoundException;
+    UserFullResponseDTO findUser(String username) throws NotFoundException;
     
 }

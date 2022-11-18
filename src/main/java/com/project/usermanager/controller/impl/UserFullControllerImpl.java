@@ -24,11 +24,11 @@ public class UserFullControllerImpl implements UserFullController {
     private static final Logger logger = LoggerFactory.getLogger(UserFullControllerImpl.class);
 
     @Override
-    public ResponseEntity<UserFullResponseDTO> findUser(String fiscalCode) throws NotFoundException {
+    public ResponseEntity<UserFullResponseDTO> findUser(String username) throws NotFoundException {
 
-        logger.info("findUser - IN: fiscalCode({}) ", fiscalCode);
+        logger.info("findUser - IN: username({}) ", username);
 
-        UserFullResponseDTO responseDTO = service.findUser(fiscalCode);
+        UserFullResponseDTO responseDTO = service.findUser(username);
         ResponseEntity<UserFullResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
         logger.info("findUser - OUT: {} ", response.toString());

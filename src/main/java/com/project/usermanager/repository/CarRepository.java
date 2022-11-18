@@ -14,6 +14,6 @@ public interface CarRepository extends MongoRepository<CarEntity, ObjectId> {
     
     Optional<CarEntity> findByLicensePlate(String licensePlate);
 
-    List<CarEntity> findAllByOwnerFiscalCode(String ownerFiscalCode);
+    List<CarEntity> findAllByOwnerUsername(String ownerUsername);
 
 }
