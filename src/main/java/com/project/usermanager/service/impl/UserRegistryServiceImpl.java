@@ -43,7 +43,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         Optional<UserEntity> findUser = repository.findByUsername(requestDTO.getUsername());
         if (findUser.isPresent()) {
 
-            logger.info("createUser - OUT: ConflictException ");
+            logger.info("createUser - OUT: ConflictException(User alredy exixts!) ");
             throw new ConflictException("User alredy exixts!");
         }
 
@@ -63,7 +63,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         Optional<UserEntity> user = repository.findByUsername(username);
         if (user.isEmpty()) {
 
-            logger.info("findUser - OUT: NotFoundException ");
+            logger.info("findUser - OUT: NotFoundException(User not found!) ");
             throw new NotFoundException("User not found!");
         }
 
@@ -82,7 +82,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         Optional<UserEntity> user = repository.findByUsername(username);
         if (user.isEmpty()) {
 
-            logger.info("editUser - OUT: NotFoundException ");
+            logger.info("editUser - OUT: NotFoundException(User not found!) ");
             throw new NotFoundException("User not found!");
         }
 
@@ -94,7 +94,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
                 Optional<UserEntity> check = repository.findByUsername(requestDTO.getUsername());
                 if (check.isPresent()) {
 
-                    logger.info("editUser - OUT: ConflictException ");
+                    logger.info("editUser - OUT: ConflictException(User with input Username alredy Exists!) ");
                     throw new ConflictException("User with input Username alredy Exists!");
                 }
             }
@@ -106,7 +106,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         // Control if input Password is correct
         if (! user.get().getPassword().equals(encryptedPassword)) {
 
-            logger.info("editUser - OUT: BadRequestException ");
+            logger.info("editUser - OUT: BadRequestException(Password is not correct!) ");
             throw new BadRequestException("Password is not correct!");
         }
 
@@ -126,7 +126,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         Optional<UserEntity> user = repository.findByUsername(username);
         if (user.isEmpty()) {
 
-            logger.info("deleteUser - OUT: NotFoundException ");
+            logger.info("deleteUser - OUT: NotFoundException(User not found!) ");
             throw new NotFoundException("User not found!");
         }
 
@@ -136,7 +136,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         // Control if input Password is correct
         if (! user.get().getPassword().equals(encryptedPassword)) {
 
-            logger.info("deleteUser - OUT: BadRequestException ");
+            logger.info("deleteUser - OUT: BadRequestException(Password is not correct!) ");
             throw new BadRequestException("Password is not correct!");
         }
 

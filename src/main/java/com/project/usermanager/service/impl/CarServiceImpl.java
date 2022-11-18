@@ -48,7 +48,7 @@ public class CarServiceImpl implements CarService {
         Optional<CarEntity> findCar = repository.findByLicensePlate(requestDTO.getLicensePlate());
         if (findCar.isPresent()) {
 
-            logger.info("createCar - OUT: ConflictException ");
+            logger.info("createCar - OUT: ConflictException(Car alredy exists!) ");
             throw new ConflictException("Car alredy exists!");
         }
 
@@ -59,7 +59,7 @@ public class CarServiceImpl implements CarService {
         Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(requestDTO.getOwnerUsername(), encryptedPassword);
         if (owner.isEmpty()) {
 
-            logger.info("createCar - OUT: BadRequestException ");
+            logger.info("createCar - OUT: BadRequestException(Password is not correct!) ");
             throw new BadRequestException("Password is not correct!");
         }
 
@@ -80,7 +80,7 @@ public class CarServiceImpl implements CarService {
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
 
-            logger.info("findCar - OUT: NotFoundException ");
+            logger.info("findCar - OUT: NotFoundException(Car not found!) ");
             throw new NotFoundException("Car not found!");
         }
         CarResponseDTO response = mapper.toDTO(car.get());
@@ -98,7 +98,7 @@ public class CarServiceImpl implements CarService {
         Optional<UserEntity> owner = userRepository.findByUsername(ownerUsername);
         if (owner.isEmpty()) {
 
-            logger.info("findAllByOwner - OUT: NotFoundException ");
+            logger.info("findAllByOwner - OUT: NotFoundException(Owner Not Found) ");
             throw new NotFoundException("Owner Not Found");
         }
         // Find car
@@ -118,7 +118,7 @@ public class CarServiceImpl implements CarService {
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
 
-            logger.info("editCar - OUT: NotFoundException ");
+            logger.info("editCar - OUT: NotFoundException(Car not found!) ");
             throw new NotFoundException("Car not found!");
         }
 
@@ -130,7 +130,7 @@ public class CarServiceImpl implements CarService {
                 Optional<CarEntity> check = repository.findByLicensePlate(requestDTO.getLicensePlate());
                 if (check.isPresent()) {
 
-                    logger.info("editCar - OUT: ConflictException ");
+                    logger.info("editCar - OUT: ConflictException(Car with input LicensePlate alredy Exists!) ");
                     throw new ConflictException("Car with input LicensePlate alredy Exists!");
                 }
             }
@@ -143,7 +143,7 @@ public class CarServiceImpl implements CarService {
         Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(car.get().getOwnerUsername(), encryptedPassword);
         if (owner.isEmpty()) {
 
-            logger.info("createCar - OUT: BadRequestException ");
+            logger.info("createCar - OUT: BadRequestException(Password is not correct!) ");
             throw new BadRequestException("Password is not correct!");
         }
 
@@ -163,7 +163,7 @@ public class CarServiceImpl implements CarService {
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
 
-            logger.info("deleteCar - OUT: NotFoundException ");
+            logger.info("deleteCar - OUT: NotFoundException(Car not found!) ");
             throw new NotFoundException("Car not found!");
         }
 
@@ -174,7 +174,7 @@ public class CarServiceImpl implements CarService {
         Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(car.get().getOwnerUsername(), encryptedPassword);
         if (owner.isEmpty()) {
 
-            logger.info("createCar - OUT: BadRequestException ");
+            logger.info("createCar - OUT: BadRequestException(Password is not correct!) ");
             throw new BadRequestException("Password is not correct!");
         }
 

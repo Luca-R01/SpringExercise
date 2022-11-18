@@ -43,7 +43,7 @@ public class UserFullServiceImpl implements UserFullService {
         Optional<UserEntity> userRegistry = userRepository.findByUsername(username);
         if (userRegistry.isEmpty()) {
             
-            logger.info("findUser - OUT: NotFoundException ");
+            logger.info("findUser - OUT: NotFoundException(User Not Found!) ");
             throw new NotFoundException("User Not Found!");
         }
         // Find User's Cars
