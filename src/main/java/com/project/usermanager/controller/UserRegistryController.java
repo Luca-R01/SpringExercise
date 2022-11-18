@@ -48,7 +48,7 @@ public interface UserRegistryController {
     ResponseEntity<String> deleteUserRegistry (
         @PathVariable String fiscalCode,
         @PathVariable String password
-    ) throws NotFoundException;
+    ) throws NotFoundException, BadRequestException;
 
     @GetMapping("/api/user/registry")
     @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)

@@ -47,17 +47,29 @@ public class CarServiceImpl implements CarService {
         // Control if Car already exists
         Optional<CarEntity> findCar = repository.findByLicensePlate(requestDTO.getLicensePlate());
         if (findCar.isPresent()) {
+
             logger.info("createCar - OUT: ConflictException ");
             throw new ConflictException("Car alredy exists!");
         }
+
+        // Control if User with input FiscalCode exists
+        Optional<UserEntity> owner = userRepository.findByFiscalCode(requestDTO.getOwnerFiscalCode());
+        if (owner.isEmpty()) {
+
+            logger.info("createCar - OUT: NotFoundException ");
+            throw new NotFoundException("User not found!");
+        }
+
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
-        // Control if User with input FiscalCode and Password exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(requestDTO.getOwnerFiscalCode(), encryptedPassword);
-        if (owner.isEmpty()) {
-            logger.info("createCar - OUT: NotFoundException ");
-            throw new NotFoundException("Owner Not Found");
+
+        // Control if input Password is correct
+        if (! owner.get().getPassword().equals(encryptedPassword)) {
+
+            logger.info("createCar - OUT: BadRequestException ");
+            throw new BadRequestException("Password is not correct!");
         }
+
         // Create
         CarEntity car = mapper.toEntity(requestDTO);
         car = repository.save(car);
@@ -74,6 +86,7 @@ public class CarServiceImpl implements CarService {
         // Find Car
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
+
             logger.info("findCar - OUT: NotFoundException ");
             throw new NotFoundException("Car not found!");
         }
@@ -91,6 +104,7 @@ public class CarServiceImpl implements CarService {
         // Control if User with input FiscalCode exists
         Optional<UserEntity> owner = userRepository.findByFiscalCode(ownerFiscalCode);
         if (owner.isEmpty()) {
+
             logger.info("findAllByOwner - OUT: NotFoundException ");
             throw new NotFoundException("Owner Not Found");
         }
@@ -110,17 +124,29 @@ public class CarServiceImpl implements CarService {
         // Find Car
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
+
             logger.info("editCar - OUT: NotFoundException ");
             throw new NotFoundException("Car not found!");
         }
+
+        // Control if User with input FiscalCode exists
+        Optional<UserEntity> owner = userRepository.findByFiscalCode(car.get().getOwnerFiscalCode());
+        if (owner.isEmpty()) {
+
+            logger.info("createCar - OUT: NotFoundException ");
+            throw new NotFoundException("User not found!");
+        }
+
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
-        // Control if User with input FiscalCode and Password exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
-        if (owner.isEmpty()) {
-            logger.info("editCar - OUT: NotFoundException ");
-            throw new NotFoundException("Owner not found!");
+
+        // Control if input Password is correct
+        if (! owner.get().getPassword().equals(encryptedPassword)) {
+
+            logger.info("createCar - OUT: BadRequestException ");
+            throw new BadRequestException("Password is not correct!");
         }
+
         // Edit Car
         CarEntity editCar = mapper.editCar(requestDTO, car.get());
         repository.save(editCar);
@@ -129,24 +155,36 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void deleteCar(String licensePlate, String ownerPassword) throws NotFoundException {
+    public void deleteCar(String licensePlate, String ownerPassword) throws NotFoundException, BadRequestException {
         
         logger.info("deleteCar - IN: licensePlate({}) ", licensePlate);
 
         // Find Car
         Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
         if (car.isEmpty()) {
+
             logger.info("deleteCar - OUT: NotFoundException ");
             throw new NotFoundException("Car not found!");
         }
+
+        // Control if User with input FiscalCode exists
+        Optional<UserEntity> owner = userRepository.findByFiscalCode(car.get().getOwnerFiscalCode());
+        if (owner.isEmpty()) {
+
+            logger.info("createCar - OUT: NotFoundException ");
+            throw new NotFoundException("User not found!");
+        }
+
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
-        // Control if User with input FiscalCode and Password exists
-        Optional<UserEntity> owner = userRepository.findByFiscalCodeAndPassword(car.get().getOwnerFiscalCode(), encryptedPassword);
-        if (owner.isEmpty()) {
-            logger.info("deleteCar - OUT: NotFoundException ");
-            throw new NotFoundException("Owner not found!");
+
+        if (! owner.get().getPassword().equals(encryptedPassword)) {
+
+            logger.info("createCar - OUT: BadRequestException ");
+            throw new BadRequestException("Password is not correct!");
         }
+
+        // Delete
         repository.delete(car.get());
 
         logger.info("deleteCar - OUT: {} ", car.get().toString());

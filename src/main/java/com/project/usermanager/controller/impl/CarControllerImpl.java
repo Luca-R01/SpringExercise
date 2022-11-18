@@ -89,7 +89,7 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    public ResponseEntity<String> deleteCar(String licensePlate, String password) throws NotFoundException {
+    public ResponseEntity<String> deleteCar(String licensePlate, String password) throws NotFoundException, BadRequestException {
 
         logger.info("deleteCar - IN: licensePlate({}) ", licensePlate);
         

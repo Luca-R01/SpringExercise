@@ -42,9 +42,11 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         // Control if User already exists
         Optional<UserEntity> findUser = repository.findByFiscalCode(requestDTO.getFiscalCode());
         if (findUser.isPresent()) {
+
             logger.info("createUser - OUT: ConflictException ");
             throw new ConflictException("User alredy exixts!");
         }
+
         // Create User
         UserEntity user = mapper.toEntity(requestDTO);
         user = repository.save(user);
@@ -60,9 +62,11 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         // Find User
         Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
         if (user.isEmpty()) {
+
             logger.info("findUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
+
         UserRegistryResponseDTO response = mapper.toDTO(user.get());
 
         logger.info("findUser - OUT: {} ", response.toString());
@@ -73,15 +77,25 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     public void editUserRegistry(UserRequestDTOPut requestDTO, String fiscalCode, String password) throws BadRequestException, NotFoundException {
 
         logger.info("editUser - IN: {}, fiscalCode({}) ", requestDTO.toString(), fiscalCode);
-        
-        // Encrypt Password
-        String encryptedPassword = PasswordUtil.encryptPassword(password);
-        //Control if User with input FiscalCode and Password exists
-        Optional<UserEntity> user = repository.findByFiscalCodeAndPassword(fiscalCode, encryptedPassword);
+
+        // Control if User with input FiscalCode exists
+        Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
         if (user.isEmpty()) {
+
             logger.info("editUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
+        
+        // Encrypt Password
+        String encryptedPassword = PasswordUtil.encryptPassword(password);
+
+        // Control if input Password is correct
+        if (! user.get().getPassword().equals(encryptedPassword)) {
+
+            logger.info("editUser - OUT: BadRequestException ");
+            throw new BadRequestException("Password is not correct!");
+        }
+
         // Edit User
         UserEntity editUser = mapper.editUser(requestDTO, user.get());
         repository.save(editUser);
@@ -90,18 +104,28 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     }
 
     @Override
-    public void deleteUserRegistry(String fiscalCode, String password) throws NotFoundException {
+    public void deleteUserRegistry(String fiscalCode, String password) throws NotFoundException, BadRequestException {
 
         logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
 
         // Encrypt Password
         String encryptedPassword = PasswordUtil.encryptPassword(password);
-        //Control if User with input FiscalCode and Password exists
-        Optional<UserEntity> user = repository.findByFiscalCodeAndPassword(fiscalCode, encryptedPassword);
+
+        // Control if User with input FiscalCode exists
+        Optional<UserEntity> user = repository.findByFiscalCode(fiscalCode);
         if (user.isEmpty()) {
+
             logger.info("deleteUser - OUT: NotFoundException ");
             throw new NotFoundException("User not found!");
         }
+
+        // Control if input Password is correct
+        if (! user.get().getPassword().equals(encryptedPassword)) {
+
+            logger.info("deleteUser - OUT: BadRequestException ");
+            throw new BadRequestException("Password is not correct!");
+        }
+
         // Delete User
         repository.delete(user.get());
 

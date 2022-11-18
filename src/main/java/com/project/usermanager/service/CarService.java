@@ -19,7 +19,7 @@ public interface CarService {
 
     void editCar(CarRequestDTOPut requestDTO, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException;
 
-    void deleteCar(String licensePlate, String ownerPassword) throws NotFoundException;
+    void deleteCar(String licensePlate, String ownerPassword) throws NotFoundException, BadRequestException;
 
     List<CarResponseDTO> findAll();
     

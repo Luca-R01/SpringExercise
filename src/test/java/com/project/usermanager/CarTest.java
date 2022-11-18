@@ -33,6 +33,7 @@ import com.project.usermanager.repository.CarRepository;
 import com.project.usermanager.repository.UserRepository;
 import com.project.usermanager.service.CarService;
 import com.project.usermanager.service.impl.CarServiceImpl;
+import com.project.usermanager.util.PasswordUtil;
 
 @ExtendWith(MockitoExtension.class)
 class CarTest {
@@ -95,7 +96,7 @@ class CarTest {
 
         UserEntity user = UserEntity.builder()
             .birthDate(LocalDate.now())
-            .password("passwd")
+            .password(PasswordUtil.encryptPassword("passwd"))
             .email("email@email.it")
             .fiscalCode("fiscalcode")
             .gender("M")
@@ -111,7 +112,7 @@ class CarTest {
     @Test
     void createCar() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(userRepository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
+        when(userRepository.findByFiscalCode(anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
         when(repository.save(any(CarEntity.class))).thenReturn(optionalCar.get());
         ResponseEntity<CarResponseDTO> result = controller.createCar(requestDTOPost, "passwd");
@@ -146,16 +147,16 @@ class CarTest {
     @Test
     void editCar() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(userRepository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
+        when(userRepository.findByFiscalCode(anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
         ResponseEntity<String> result = controller.editCar(requestDTOPut, "licenseplate", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 
     @Test 
-    void deleteCar() throws NotFoundException {
+    void deleteCar() throws NotFoundException, BadRequestException {
 
-        when(userRepository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
+        when(userRepository.findByFiscalCode(anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
         ResponseEntity<String> result = controller.deleteCar("licenseplate", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());

@@ -65,7 +65,7 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     }
 
     @Override
-    public ResponseEntity<String> deleteUserRegistry(String fiscalCode, String password) throws NotFoundException {
+    public ResponseEntity<String> deleteUserRegistry(String fiscalCode, String password) throws NotFoundException, BadRequestException {
         
         logger.info("deleteUser - IN: fiscalCode({}) ", fiscalCode);
 

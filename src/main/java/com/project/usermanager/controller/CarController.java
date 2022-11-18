@@ -56,6 +56,6 @@ public interface CarController {
     ResponseEntity<String> deleteCar (
         @PathVariable String licensePlate,
         @PathVariable String password
-    ) throws NotFoundException;
+    ) throws NotFoundException, BadRequestException;
     
 }

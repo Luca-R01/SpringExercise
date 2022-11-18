@@ -31,6 +31,7 @@ import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.UserRepository;
 import com.project.usermanager.service.UserRegistryService;
 import com.project.usermanager.service.impl.UserRegistryServiceImpl;
+import com.project.usermanager.util.PasswordUtil;
 
 @ExtendWith(MockitoExtension.class)
 class UserRegistryTest {
@@ -78,7 +79,7 @@ class UserRegistryTest {
 
         UserEntity user = UserEntity.builder()
             .birthDate(LocalDate.now())
-            .password("passwd")
+            .password(PasswordUtil.encryptPassword("passwd"))
             .email("email@email.it")
             .fiscalCode("fiscalcode")
             .gender("M")
@@ -123,15 +124,15 @@ class UserRegistryTest {
     @Test
     void editUserRegistry() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(repository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(optionalUser);
+        when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
         ResponseEntity<String> result = controller.editUserRegistry(requestDTOPut, "fiscalcode", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 
     @Test 
-    void deleteUserRegistry() throws NotFoundException {
+    void deleteUserRegistry() throws NotFoundException, BadRequestException {
 
-        when(repository.findByFiscalCodeAndPassword(anyString(), anyString())).thenReturn(optionalUser);
+        when(repository.findByFiscalCode(anyString())).thenReturn(optionalUser);
         ResponseEntity<String> result = controller.deleteUserRegistry("fiscalcode", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
