@@ -65,18 +65,6 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     }
 
     @Override
-    public ResponseEntity<String> deleteUserRegistry(String username, String password) throws NotFoundException, BadRequestException {
-        
-        logger.info("deleteUser - IN: username({}) ", username);
-
-        service.deleteUserRegistry(username, password);
-        ResponseEntity<String> response = new ResponseEntity<>("DELETED", HttpStatus.NO_CONTENT);
-
-        logger.info("deleteUser - OUT: {} ", response.toString());
-        return response;
-    }
-
-    @Override
     public ResponseEntity<List<UserRegistryResponseDTO>> findAllUserRegistry() {
 
         logger.info("findAll - IN: none ");

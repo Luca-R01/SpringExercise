@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.usermanager.controller.UserFullController;
 import com.project.usermanager.dto.response.UserFullResponseDTO;
+import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.service.UserFullService;
 
@@ -32,6 +33,18 @@ public class UserFullControllerImpl implements UserFullController {
         ResponseEntity<UserFullResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
         logger.info("findUser - OUT: {} ", response.toString());
+        return response;
+    }
+
+    @Override
+    public ResponseEntity<String> deleteUserAndCars(String username, String password) throws NotFoundException, BadRequestException {
+        
+        logger.info("deleteUserAndCars - IN: username({})", username);
+
+        service.deleteUserAndCars(username, password);
+        ResponseEntity<String> response = new ResponseEntity<>("Deleted", HttpStatus.NO_CONTENT);
+
+        logger.info("deleteUserAndCars - OUT: {}", response.toString());
         return response;
     }
     

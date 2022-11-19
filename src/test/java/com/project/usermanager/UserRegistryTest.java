@@ -138,13 +138,5 @@ class UserRegistryTest {
         ResponseEntity<String> result = controller.editUserRegistry(requestDTOPut, "username", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
-
-    @Test 
-    void deleteUserRegistry() throws NotFoundException, BadRequestException {
-
-        when(repository.findByUsername(anyString())).thenReturn(optionalUser);
-        ResponseEntity<String> result = controller.deleteUserRegistry("username", "passwd");
-        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
-    }
     
 }

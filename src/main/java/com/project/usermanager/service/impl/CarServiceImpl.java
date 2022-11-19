@@ -17,8 +17,10 @@ import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.mapper.CarMapper;
 import com.project.usermanager.model.CarEntity;
 import com.project.usermanager.model.UserEntity;
+import com.project.usermanager.model.deleted.CarEntityDeleted;
 import com.project.usermanager.repository.CarRepository;
 import com.project.usermanager.repository.UserRepository;
+import com.project.usermanager.repository.deleted.CarDeletedRepository;
 import com.project.usermanager.service.CarService;
 import com.project.usermanager.util.PasswordUtil;
 
@@ -30,6 +32,9 @@ public class CarServiceImpl implements CarService {
 
     @Autowired
     private final CarRepository repository;
+
+    @Autowired
+    private final CarDeletedRepository deletedRepository;
 
     @Autowired
     private final UserRepository userRepository;
@@ -187,6 +192,12 @@ public class CarServiceImpl implements CarService {
 
         // Delete
         repository.delete(car.get());
+        
+        // Save deleted Car in Deleted DB Collection
+        CarEntityDeleted carDeleted = CarEntityDeleted.builder()
+            .carEntity(car.get())
+        .build();
+        deletedRepository.save(carDeleted);
 
         logger.info("deleteCar - OUT: {} ", car.get().toString());
     }

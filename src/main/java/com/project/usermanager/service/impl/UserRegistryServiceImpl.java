@@ -118,35 +118,6 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     }
 
     @Override
-    public void deleteUserRegistry(String username, String password) throws NotFoundException, BadRequestException {
-
-        logger.info("deleteUser - IN: username({}) ", username);
-
-        // Control if User with input Username exists
-        Optional<UserEntity> user = repository.findByUsername(username);
-        if (user.isEmpty()) {
-
-            logger.info("deleteUser - OUT: NotFoundException(User not found!) ");
-            throw new NotFoundException("User not found!");
-        }
-
-        // Encrypt Password
-        String encryptedPassword = PasswordUtil.encryptPassword(password);
-
-        // Control if input Password is correct
-        if (! user.get().getPassword().equals(encryptedPassword)) {
-
-            logger.info("deleteUser - OUT: BadRequestException(Password is not correct!) ");
-            throw new BadRequestException("Password is not correct!");
-        }
-
-        // Delete User
-        repository.delete(user.get());
-
-        logger.info("deleteUser - OUT: {} ", user.get().toString());
-    }
-
-    @Override
     public List<UserRegistryResponseDTO> findAllUserRegistry() {
 
         logger.info("findAll - IN: none ");
