@@ -1,6 +1,7 @@
 package com.project.usermanager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -103,6 +104,15 @@ class UserRegistryTest {
         when(repository.save(any(UserEntity.class))).thenReturn(optionalUser.get());
         ResponseEntity<UserRegistryResponseDTO> result = controller.createUserRegistry(requestDTOPost);
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
+    }
+
+    @Test
+    void createUserRegistryWithConflictException() throws BadRequestException, ConflictException {
+
+        when(repository.findByUsername(anyString())).thenReturn(optionalUser);
+        assertThrows(ConflictException.class, () -> { 
+            controller.createUserRegistry(requestDTOPost);
+        });
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.project.usermanager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -51,6 +52,7 @@ class CarTest {
     private Optional<CarEntity> optionalCar;
     private Optional<CarEntity> emptyOptionalCar;
     private Optional<UserEntity> ownerOptional;
+    private Optional<UserEntity> emptyOwnerOptional;
     private List<CarEntity> carsList;
 
     @BeforeEach
@@ -107,6 +109,8 @@ class CarTest {
 
         ownerOptional = Optional.of(user);
 
+        emptyOwnerOptional = Optional.empty();
+
     }
 
     @Test
@@ -117,6 +121,35 @@ class CarTest {
         when(repository.save(any(CarEntity.class))).thenReturn(optionalCar.get());
         ResponseEntity<CarResponseDTO> result = controller.createCar(requestDTOPost, "passwd");
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
+    }
+
+    @Test
+    void createCarWithConflictException() throws BadRequestException, ConflictException {
+
+        when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
+        assertThrows(ConflictException.class, () -> { 
+            controller.createCar(requestDTOPost, "passwd");
+        });
+    }
+
+    @Test
+    void createCarWithWrongPassword() throws BadRequestException, ConflictException, NotFoundException {
+
+        when(userRepository.findByUsername(anyString())).thenReturn(ownerOptional);
+        when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
+        assertThrows(BadRequestException.class, () -> {
+            controller.createCar(requestDTOPost, "wrongPassword");
+        });
+    }
+
+    @Test
+    void createCarWithNoOwner() throws BadRequestException, ConflictException, NotFoundException {
+
+        when(userRepository.findByUsername(anyString())).thenReturn(emptyOwnerOptional);
+        when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
+        assertThrows(BadRequestException.class, () -> {
+            controller.createCar(requestDTOPost, "passwd");
+        });
     }
 
     @Test
