@@ -56,8 +56,8 @@ public class CarServiceImpl implements CarService {
         Optional<UserEntity> owner = userRepository.findByUsername(requestDTO.getOwnerUsername());
         if (owner.isEmpty()) {
 
-            logger.info("createCar - OUT: BadRequestException(User not found!) ");
-            throw new BadRequestException("User not found!");
+            logger.info("createCar - OUT: NotFoundException(User not found!) ");
+            throw new NotFoundException("User not found!");
         }
 
         // Encrypt password

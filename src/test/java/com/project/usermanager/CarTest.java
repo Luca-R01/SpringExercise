@@ -147,7 +147,7 @@ class CarTest {
 
         when(userRepository.findByUsername(anyString())).thenReturn(emptyOwnerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
-        assertThrows(BadRequestException.class, () -> {
+        assertThrows(NotFoundException.class, () -> {
             controller.createCar(requestDTOPost, "passwd");
         });
     }
