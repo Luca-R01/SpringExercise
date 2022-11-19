@@ -32,6 +32,7 @@ import com.project.usermanager.model.CarEntity;
 import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.CarRepository;
 import com.project.usermanager.repository.UserRepository;
+import com.project.usermanager.repository.deleted.CarDeletedRepository;
 import com.project.usermanager.service.CarService;
 import com.project.usermanager.service.impl.CarServiceImpl;
 import com.project.usermanager.util.PasswordUtil;
@@ -41,6 +42,9 @@ class CarTest {
 
     @Mock
     private CarRepository repository;
+
+    @Mock
+    private CarDeletedRepository deletedRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -63,6 +67,7 @@ class CarTest {
         CarService service = CarServiceImpl.builder()
             .mapper(mapper)
             .repository(repository)
+            .deletedRepository(deletedRepository)
             .userRepository(userRepository)
         .build();
 

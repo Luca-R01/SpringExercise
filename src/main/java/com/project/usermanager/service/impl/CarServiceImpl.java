@@ -195,6 +195,7 @@ public class CarServiceImpl implements CarService {
         
         // Save deleted Car in Deleted DB Collection
         CarEntityDeleted carDeleted = CarEntityDeleted.builder()
+            .id(car.get().getId())
             .carEntity(car.get())
         .build();
         deletedRepository.save(carDeleted);

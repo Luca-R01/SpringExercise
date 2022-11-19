@@ -102,6 +102,7 @@ public class UserFullServiceImpl implements UserFullService {
         for (CarEntity car : carList) {
 
             CarEntityDeleted carDeleted = CarEntityDeleted.builder()
+                .id(car.getId())
                 .carEntity(car)
             .build();
 
@@ -114,6 +115,7 @@ public class UserFullServiceImpl implements UserFullService {
 
         // Add Deleted User in Deleted DB Collections
         UserEntityDeleted userDeleted = UserEntityDeleted.builder()
+            .id(user.get().getId())
             .userEntity(user.get())
         .build();
 
