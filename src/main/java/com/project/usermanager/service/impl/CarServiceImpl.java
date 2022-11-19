@@ -52,14 +52,21 @@ public class CarServiceImpl implements CarService {
             throw new ConflictException("Car alredy exists!");
         }
 
+        // Control if input User exists
+        Optional<UserEntity> owner = userRepository.findByUsername(requestDTO.getOwnerUsername());
+        if (owner.isEmpty()) {
+
+            logger.info("createCar - OUT: BadRequestException(User not found!) ");
+            throw new BadRequestException("User not found!");
+        }
+
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
 
         // Control if input Password is correct
-        Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(requestDTO.getOwnerUsername(), encryptedPassword);
-        if (owner.isEmpty()) {
+        if (! owner.get().getPassword().equals(encryptedPassword)) {
 
-            logger.info("createCar - OUT: BadRequestException(Password is not correct!) ");
+            logger.info("deleteUser - OUT: BadRequestException(Password is not correct!) ");
             throw new BadRequestException("Password is not correct!");
         }
 

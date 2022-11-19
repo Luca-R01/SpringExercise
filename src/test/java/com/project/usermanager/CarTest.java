@@ -112,7 +112,7 @@ class CarTest {
     @Test
     void createCar() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(userRepository.findByUsernameAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
+        when(userRepository.findByUsername(anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
         when(repository.save(any(CarEntity.class))).thenReturn(optionalCar.get());
         ResponseEntity<CarResponseDTO> result = controller.createCar(requestDTOPost, "passwd");
