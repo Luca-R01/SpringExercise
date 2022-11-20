@@ -22,5 +22,7 @@ public interface CarService {
     void deleteCar(String licensePlate, String ownerPassword) throws NotFoundException, BadRequestException;
 
     List<CarEntity> findAll();
+
+    void deleteAll(String ownerUsername, String ownerPassword) throws NotFoundException, BadRequestException;
     
 }

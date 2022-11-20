@@ -52,7 +52,7 @@ public class UserFullServiceComponentImpl implements UserFullServiceComponent {
 
         logger.info("deleteUserAndCars - IN: username({}) ", username);
         
-        carService.deleteCar(username, password);
+        carService.deleteAll(username, password);
         userRegistryService.deleteUserRegistry(username, password);
 
         logger.info("deleteUserAndCars - OUT: OK ");

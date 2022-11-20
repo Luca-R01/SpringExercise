@@ -188,5 +188,30 @@ public class CarServiceImpl implements CarService {
         logger.info("findAll - OUT: {} ", carList.toString());
         return carList;
     }
+
+    @Override
+    public void deleteAll(String ownerUsername, String ownerPassword) throws NotFoundException, BadRequestException {
+
+        logger.info("deleteAll - IN: ownerUsername({}) ", ownerUsername);
+        
+        // Find Cars
+        List<CarEntity> carList = this.findAllByOwner(ownerUsername);
+
+        // Encrypt password
+        String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
+
+        // Control if input Password is correct
+        Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(ownerUsername, encryptedPassword);
+        if (owner.isEmpty()) {
+
+            logger.info("createCar - OUT: BadRequestException(Password is not correct!) ");
+            throw new BadRequestException("Password is not correct!");
+        }
+
+        // Delete
+        repository.deleteAll(carList);
+        
+        logger.info("deleteAll - OUT: {} ", carList.toString());
+    }
     
 }
