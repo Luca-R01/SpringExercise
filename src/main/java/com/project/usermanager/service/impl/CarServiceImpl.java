@@ -106,6 +106,7 @@ public class CarServiceImpl implements CarService {
             logger.info("findAllByOwner - OUT: NotFoundException(Owner Not Found) ");
             throw new NotFoundException("Owner Not Found");
         }
+        
         // Find car
         List<CarEntity> carList = repository.findAllByOwnerUsername(ownerUsername);
 
