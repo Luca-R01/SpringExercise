@@ -19,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.project.usermanager.component.UserRegistryServiceComponent;
+import com.project.usermanager.component.impl.UserRegistryServiceComponentImpl;
 import com.project.usermanager.controller.UserRegistryController;
 import com.project.usermanager.controller.impl.UserRegistryControllerImpl;
 import com.project.usermanager.dto.request.user.UserRequestDTOPost;
@@ -58,8 +60,13 @@ class UserRegistryTest {
             .mapper(mapper)
         .build();
 
-        controller = UserRegistryControllerImpl.builder()
+        UserRegistryServiceComponent serviceComponent = UserRegistryServiceComponentImpl.builder()
             .service(service)
+            .mapper(mapper)
+        .build();
+
+        controller = UserRegistryControllerImpl.builder()
+            .serviceComponent(serviceComponent)
         .build();
 
         // Inzialaze Data

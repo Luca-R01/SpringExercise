@@ -1,24 +1,22 @@
-package com.project.usermanager.service;
+package com.project.usermanager.component;
 
 import java.util.List;
 
 import com.project.usermanager.dto.request.user.UserRequestDTOPost;
 import com.project.usermanager.dto.request.user.UserRequestDTOPut;
+import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
-import com.project.usermanager.model.UserEntity;
 
-public interface UserRegistryService {
+public interface UserRegistryServiceComponent {
 
-    UserEntity createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException;
+    UserRegistryResponseDTO createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException;
 
-    UserEntity findUserRegistry(String username) throws NotFoundException;
+    UserRegistryResponseDTO findUserRegistry(String username) throws NotFoundException;
 
     void editUserRegistry(UserRequestDTOPut requestDTO, String username, String password) throws BadRequestException, NotFoundException, ConflictException;
 
-    List<UserEntity> findAllUserRegistry();
-
-    void deleteUserRegistry(String username, String password) throws NotFoundException, BadRequestException;
+    List<UserRegistryResponseDTO> findAllUserRegistry();
     
 }

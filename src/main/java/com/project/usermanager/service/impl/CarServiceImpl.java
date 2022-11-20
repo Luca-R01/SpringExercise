@@ -10,17 +10,14 @@ import org.springframework.stereotype.Service;
 
 import com.project.usermanager.dto.request.car.CarRequestDTOPost;
 import com.project.usermanager.dto.request.car.CarRequestDTOPut;
-import com.project.usermanager.dto.response.CarResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.mapper.CarMapper;
 import com.project.usermanager.model.CarEntity;
 import com.project.usermanager.model.UserEntity;
-import com.project.usermanager.model.deleted.CarEntityDeleted;
 import com.project.usermanager.repository.CarRepository;
 import com.project.usermanager.repository.UserRepository;
-import com.project.usermanager.repository.deleted.CarDeletedRepository;
 import com.project.usermanager.service.CarService;
 import com.project.usermanager.util.PasswordUtil;
 
@@ -34,9 +31,6 @@ public class CarServiceImpl implements CarService {
     private final CarRepository repository;
 
     @Autowired
-    private final CarDeletedRepository deletedRepository;
-
-    @Autowired
     private final UserRepository userRepository;
 
     @Autowired
@@ -45,7 +39,7 @@ public class CarServiceImpl implements CarService {
     private static final Logger logger = LoggerFactory.getLogger(CarServiceImpl.class);
 
     @Override
-    public CarResponseDTO createCar(CarRequestDTOPost requestDTO, String ownerPassword) throws BadRequestException, ConflictException, NotFoundException {
+    public CarEntity createCar(CarRequestDTOPost requestDTO, String ownerPassword) throws BadRequestException, ConflictException, NotFoundException {
 
         logger.info("createCar - IN: {} ", requestDTO.toString());
 
@@ -80,11 +74,11 @@ public class CarServiceImpl implements CarService {
         car = repository.save(car);
 
         logger.info("createCar - OUT: {} ", car.toString());
-        return mapper.toDTO(car);
+        return car;
     }
 
     @Override
-    public CarResponseDTO findCar(String licensePlate) throws NotFoundException {
+    public CarEntity findCar(String licensePlate) throws NotFoundException {
 
         logger.info("findCar - IN: licensePlate({}) ", licensePlate);
         
@@ -95,14 +89,13 @@ public class CarServiceImpl implements CarService {
             logger.info("findCar - OUT: NotFoundException(Car not found!) ");
             throw new NotFoundException("Car not found!");
         }
-        CarResponseDTO response = mapper.toDTO(car.get());
 
-        logger.info("findCar - OUT: {} ", response.toString());
-        return response;
+        logger.info("findCar - OUT: {} ", car.get().toString());
+        return car.get();
     }
 
     @Override
-    public List<CarResponseDTO> findAllByOwner(String ownerUsername) throws NotFoundException {
+    public List<CarEntity> findAllByOwner(String ownerUsername) throws NotFoundException {
 
         logger.info("findAllByOwner - IN: ownerUsername({}) ", ownerUsername);
 
@@ -115,10 +108,9 @@ public class CarServiceImpl implements CarService {
         }
         // Find car
         List<CarEntity> carList = repository.findAllByOwnerUsername(ownerUsername);
-        List<CarResponseDTO> response = mapper.toDTOList(carList);
 
-        logger.info("findAllByOwner - OUT: {} ", response.toString());
-        return response;
+        logger.info("findAllByOwner - OUT: {} ", carList.toString());
+        return carList;
     }
 
     @Override
@@ -127,17 +119,12 @@ public class CarServiceImpl implements CarService {
         logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
         
         // Find Car
-        Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
-        if (car.isEmpty()) {
-
-            logger.info("editCar - OUT: NotFoundException(Car not found!) ");
-            throw new NotFoundException("Car not found!");
-        }
+        CarEntity car = this.findCar(licensePlate);
 
         // Control if LicensePlate in DTO Not Exists
         if (requestDTO.getLicensePlate() != null) {
 
-            if (! requestDTO.getLicensePlate().equals(car.get().getLicensePlate())) {
+            if (! requestDTO.getLicensePlate().equals(car.getLicensePlate())) {
 
                 Optional<CarEntity> check = repository.findByLicensePlate(requestDTO.getLicensePlate());
                 if (check.isPresent()) {
@@ -152,7 +139,7 @@ public class CarServiceImpl implements CarService {
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
 
         // Control if input Password is correct
-        Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(car.get().getOwnerUsername(), encryptedPassword);
+        Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(car.getOwnerUsername(), encryptedPassword);
         if (owner.isEmpty()) {
 
             logger.info("createCar - OUT: BadRequestException(Password is not correct!) ");
@@ -160,7 +147,7 @@ public class CarServiceImpl implements CarService {
         }
 
         // Edit Car
-        CarEntity editCar = mapper.editCar(requestDTO, car.get());
+        CarEntity editCar = mapper.editCar(requestDTO, car);
         repository.save(editCar);
 
         logger.info("editCar - OUT: {} ", editCar.toString());
@@ -172,18 +159,13 @@ public class CarServiceImpl implements CarService {
         logger.info("deleteCar - IN: licensePlate({}) ", licensePlate);
 
         // Find Car
-        Optional<CarEntity> car = repository.findByLicensePlate(licensePlate);
-        if (car.isEmpty()) {
-
-            logger.info("deleteCar - OUT: NotFoundException(Car not found!) ");
-            throw new NotFoundException("Car not found!");
-        }
+        CarEntity car = this.findCar(licensePlate);
 
         // Encrypt password
         String encryptedPassword = PasswordUtil.encryptPassword(ownerPassword);
 
         // Control if input Password is correct
-        Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(car.get().getOwnerUsername(), encryptedPassword);
+        Optional<UserEntity> owner = userRepository.findByUsernameAndPassword(car.getOwnerUsername(), encryptedPassword);
         if (owner.isEmpty()) {
 
             logger.info("createCar - OUT: BadRequestException(Password is not correct!) ");
@@ -191,29 +173,19 @@ public class CarServiceImpl implements CarService {
         }
 
         // Delete
-        repository.delete(car.get());
-        
-        // Save deleted Car in Deleted DB Collection
-        CarEntityDeleted carDeleted = CarEntityDeleted.builder()
-            .id(car.get().getId())
-            .carEntity(car.get())
-        .build();
-        deletedRepository.save(carDeleted);
-
-        logger.info("deleteCar - OUT: {} ", car.get().toString());
+        repository.delete(car);
     }
 
     @Override
-    public List<CarResponseDTO> findAll() {
+    public List<CarEntity> findAll() {
 
         logger.info("findAll - IN: none ");
         
         // Find Cars
         List<CarEntity> carList = repository.findAll();
-        List<CarResponseDTO> response = mapper.toDTOList(carList);
 
-        logger.info("findAll - OUT: {} ", response.toString());
-        return response;
+        logger.info("findAll - OUT: {} ", carList.toString());
+        return carList;
     }
     
 }

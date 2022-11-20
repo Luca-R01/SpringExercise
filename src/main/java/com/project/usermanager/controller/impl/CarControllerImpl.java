@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.usermanager.component.CarServiceComponent;
 import com.project.usermanager.controller.CarController;
 import com.project.usermanager.dto.request.car.CarRequestDTOPost;
 import com.project.usermanager.dto.request.car.CarRequestDTOPut;
@@ -16,7 +17,6 @@ import com.project.usermanager.dto.response.CarResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
-import com.project.usermanager.service.CarService;
 
 import lombok.Builder;
 
@@ -25,7 +25,7 @@ import lombok.Builder;
 public class CarControllerImpl implements CarController {
 
     @Autowired
-    private final CarService service;
+    private final CarServiceComponent serviceComponent;
 
     private static final Logger logger = LoggerFactory.getLogger(CarControllerImpl.class);
 
@@ -34,7 +34,7 @@ public class CarControllerImpl implements CarController {
         
         logger.info("createCar - IN: {} ", requestDTO.toString());
 
-        CarResponseDTO responseDTO = service.createCar(requestDTO, password);
+        CarResponseDTO responseDTO = serviceComponent.createCar(requestDTO, password);
         ResponseEntity<CarResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
         logger.info("createCar - OUT: {} ", response.toString());
@@ -46,7 +46,7 @@ public class CarControllerImpl implements CarController {
 
         logger.info("findCar - IN: licensePlate({}) ", licensePlate);
 
-        CarResponseDTO responseDTO = service.findCar(licensePlate);
+        CarResponseDTO responseDTO = serviceComponent.findCar(licensePlate);
         ResponseEntity<CarResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
         logger.info("findCar - OUT: {} ", response.toString());
@@ -59,7 +59,7 @@ public class CarControllerImpl implements CarController {
         if (ownerUsername == null) {
             logger.info("findAll - IN: ownerUsername(NULL) ");
 
-            List<CarResponseDTO> responseDTO = service.findAll();
+            List<CarResponseDTO> responseDTO = serviceComponent.findAll();
             ResponseEntity<List<CarResponseDTO>> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
             logger.info("findAll - OUT: {} ", response.toString());
@@ -68,7 +68,7 @@ public class CarControllerImpl implements CarController {
         else {
             logger.info("findAll - IN: ownerUsername({}) ", ownerUsername);
 
-            List<CarResponseDTO> responseDTO = service.findAllByOwner(ownerUsername);
+            List<CarResponseDTO> responseDTO = serviceComponent.findAllByOwner(ownerUsername);
             ResponseEntity<List<CarResponseDTO>> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
             logger.info("findAll - OUT: {} ", response.toString());
@@ -81,7 +81,7 @@ public class CarControllerImpl implements CarController {
         
         logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
 
-        service.editCar(requestDTO, licensePlate, password);
+        serviceComponent.editCar(requestDTO, licensePlate, password);
         ResponseEntity<String> response = new ResponseEntity<>("EDITED", HttpStatus.NO_CONTENT);
 
         logger.info("editCar - OUT: {} ", response.toString());
@@ -93,7 +93,7 @@ public class CarControllerImpl implements CarController {
 
         logger.info("deleteCar - IN: licensePlate({}) ", licensePlate);
         
-        service.deleteCar(licensePlate, password);
+        serviceComponent.deleteCar(licensePlate, password);
         ResponseEntity<String> response = new ResponseEntity<>("DELETED", HttpStatus.NO_CONTENT);
 
         logger.info("deleteCar - OUT: {} ", response.toString());

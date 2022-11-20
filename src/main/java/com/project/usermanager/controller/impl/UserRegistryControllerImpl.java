@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.usermanager.component.UserRegistryServiceComponent;
 import com.project.usermanager.controller.UserRegistryController;
 import com.project.usermanager.dto.request.user.UserRequestDTOPost;
 import com.project.usermanager.dto.request.user.UserRequestDTOPut;
@@ -16,7 +17,6 @@ import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
-import com.project.usermanager.service.UserRegistryService;
 
 import lombok.Builder;
 @Builder
@@ -24,7 +24,7 @@ import lombok.Builder;
 public class UserRegistryControllerImpl implements UserRegistryController {
 
     @Autowired
-    private final UserRegistryService service;
+    private final UserRegistryServiceComponent serviceComponent;
 
     private static final Logger logger = LoggerFactory.getLogger(UserRegistryControllerImpl.class);
 
@@ -33,7 +33,7 @@ public class UserRegistryControllerImpl implements UserRegistryController {
 
         logger.info("createUser - IN: {} ", requestDTO.toString());
 
-        UserRegistryResponseDTO responseDTO = service.createUserRegistry(requestDTO);
+        UserRegistryResponseDTO responseDTO = serviceComponent.createUserRegistry(requestDTO);
         ResponseEntity<UserRegistryResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
         logger.info("createUser - OUT: {} ", response.toString());
@@ -45,7 +45,7 @@ public class UserRegistryControllerImpl implements UserRegistryController {
         
         logger.info("findUser - IN: username({}) ", username);
 
-        UserRegistryResponseDTO responseDTO = service.findUserRegistry(username);
+        UserRegistryResponseDTO responseDTO = serviceComponent.findUserRegistry(username);
         ResponseEntity<UserRegistryResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
         logger.info("findUser - OUT: {} ", response.toString());
@@ -57,7 +57,7 @@ public class UserRegistryControllerImpl implements UserRegistryController {
         
         logger.info("editUser - IN: {}, username({}) ", requestDTO.toString(), username);
 
-        service.editUserRegistry(requestDTO, username, password);
+        serviceComponent.editUserRegistry(requestDTO, username, password);
         ResponseEntity<String> response = new ResponseEntity<>("EDITED", HttpStatus.NO_CONTENT);
 
         logger.info("editUser - OUT: {} ", response.toString());
@@ -69,7 +69,7 @@ public class UserRegistryControllerImpl implements UserRegistryController {
 
         logger.info("findAll - IN: none ");
 
-        List<UserRegistryResponseDTO> responseDTOList = service.findAllUserRegistry();
+        List<UserRegistryResponseDTO> responseDTOList = serviceComponent.findAllUserRegistry();
         ResponseEntity<List<UserRegistryResponseDTO>> response = new ResponseEntity<>(responseDTOList, HttpStatus.OK);
 
         logger.info("findAll - OUT: {} ", response.toString());

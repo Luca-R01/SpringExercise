@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.project.usermanager.component.UserFullServiceComponent;
+import com.project.usermanager.component.impl.UserFullServiceComponentImpl;
 import com.project.usermanager.controller.UserFullController;
 import com.project.usermanager.controller.impl.UserFullControllerImpl;
 import com.project.usermanager.dto.response.UserFullResponseDTO;
@@ -28,8 +30,10 @@ import com.project.usermanager.model.CarEntity;
 import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.CarRepository;
 import com.project.usermanager.repository.UserRepository;
-import com.project.usermanager.service.UserFullService;
-import com.project.usermanager.service.impl.UserFullServiceImpl;
+import com.project.usermanager.service.CarService;
+import com.project.usermanager.service.UserRegistryService;
+import com.project.usermanager.service.impl.CarServiceImpl;
+import com.project.usermanager.service.impl.UserRegistryServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class UserFullTest {
@@ -56,14 +60,25 @@ class UserFullTest {
             .userMapper(userMapper)
         .build();
 
-        UserFullService service = UserFullServiceImpl.builder()
-            .carRepository(carRepository)
+        CarService carService = CarServiceImpl.builder()
+            .repository(carRepository)
             .userRepository(userRepository)
+            .mapper(carMapper)
+        .build();
+
+        UserRegistryService userRegistryService = UserRegistryServiceImpl.builder()
+            .repository(userRepository)
+            .mapper(userMapper)
+        .build();
+
+        UserFullServiceComponent serviceComponent = UserFullServiceComponentImpl.builder()
+            .carService(carService)
+            .userRegistryService(userRegistryService)
             .mapper(mapper)
         .build();
 
         controller = UserFullControllerImpl.builder()
-            .service(service)
+            .serviceComponent(serviceComponent)
         .build();
 
         // Inizialize Data
@@ -96,8 +111,8 @@ class UserFullTest {
     @Test
     void findUser() throws NotFoundException {
 
-        when(userRepository.findByUsername(anyString())).thenReturn(optionalUserRegistry);
         when(carRepository.findAllByOwnerUsername(anyString())).thenReturn(carsList);
+        when(userRepository.findByUsername(anyString())).thenReturn(optionalUserRegistry);
         ResponseEntity<UserFullResponseDTO> result = controller.findUser("username");
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }

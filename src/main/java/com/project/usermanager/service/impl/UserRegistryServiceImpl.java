@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.project.usermanager.dto.request.user.UserRequestDTOPost;
 import com.project.usermanager.dto.request.user.UserRequestDTOPut;
-import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
@@ -35,7 +34,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     private static final Logger logger = LoggerFactory.getLogger(UserRegistryServiceImpl.class);
 
     @Override
-    public UserRegistryResponseDTO createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
+    public UserEntity createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
 
         logger.info("createUser - IN: {} ", requestDTO.toString());
 
@@ -52,10 +51,10 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         user = repository.save(user);
 
         logger.info("createUser - OUT: {} ", user.toString());
-        return mapper.toDTO(user);
+        return user;
     }
 
-    public UserRegistryResponseDTO findUserRegistry(String username) throws NotFoundException {
+    public UserEntity findUserRegistry(String username) throws NotFoundException {
 
         logger.info("findUser - IN: username({}) ", username);
 
@@ -67,10 +66,8 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             throw new NotFoundException("User not found!");
         }
 
-        UserRegistryResponseDTO response = mapper.toDTO(user.get());
-
-        logger.info("findUser - OUT: {} ", response.toString());
-        return response;
+        logger.info("findUser - OUT: {} ", user.get().toString());
+        return user.get();
     }
 
     @Override
@@ -79,17 +76,12 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         logger.info("editUser - IN: {}, username({}) ", requestDTO.toString(), username);
 
         // Control if User with input Username exists
-        Optional<UserEntity> user = repository.findByUsername(username);
-        if (user.isEmpty()) {
-
-            logger.info("editUser - OUT: NotFoundException(User not found!) ");
-            throw new NotFoundException("User not found!");
-        }
+        UserEntity user = this.findUserRegistry(username);
 
         // Control if Username in DTO Not Exists
         if (requestDTO.getUsername() != null) {
 
-            if (! requestDTO.getUsername().equals(user.get().getUsername())) {
+            if (! requestDTO.getUsername().equals(user.getUsername())) {
 
                 Optional<UserEntity> check = repository.findByUsername(requestDTO.getUsername());
                 if (check.isPresent()) {
@@ -104,30 +96,54 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         String encryptedPassword = PasswordUtil.encryptPassword(password);
 
         // Control if input Password is correct
-        if (! user.get().getPassword().equals(encryptedPassword)) {
+        if (! user.getPassword().equals(encryptedPassword)) {
 
             logger.info("editUser - OUT: BadRequestException(Password is not correct!) ");
             throw new BadRequestException("Password is not correct!");
         }
 
         // Edit User
-        UserEntity editUser = mapper.editUser(requestDTO, user.get());
+        UserEntity editUser = mapper.editUser(requestDTO, user);
         repository.save(editUser);
 
         logger.info("editUser - OUT: {} ", editUser.toString());  
     }
 
     @Override
-    public List<UserRegistryResponseDTO> findAllUserRegistry() {
+    public List<UserEntity> findAllUserRegistry() {
 
         logger.info("findAll - IN: none ");
 
         // Find Users
         List<UserEntity> userList = repository.findAll();
-        List<UserRegistryResponseDTO> response = mapper.toDTOList(userList);
         
-        logger.info("findAll - OUT: {} ", response.toString());
-        return response;
+        logger.info("findAll - OUT: {} ", userList.toString());
+        return userList;
+    }
+
+    @Override
+    public void deleteUserRegistry(String username, String password) throws NotFoundException, BadRequestException {
+
+        logger.info("deleteUserRegistry - IN: username({}) ", username);
+        
+        // Control if User with input Username exists
+        UserEntity user = this.findUserRegistry(username);
+
+        // Encrypt Password
+        String encryptedPassword = PasswordUtil.encryptPassword(password);
+
+        // Control if input Password is correct
+        if (! user.getPassword().equals(encryptedPassword)) {
+
+            logger.info("editUser - OUT: BadRequestException(Password is not correct!) ");
+            throw new BadRequestException("Password is not correct!");
+        }
+
+        // Delete 
+        repository.delete(user);
+
+        logger.info("deleteUserRegistry - OUT: {} ", user.toString());
+        
     }
     
 }
