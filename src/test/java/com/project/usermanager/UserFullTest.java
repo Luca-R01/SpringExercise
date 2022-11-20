@@ -22,6 +22,7 @@ import com.project.usermanager.component.impl.UserFullServiceComponentImpl;
 import com.project.usermanager.controller.UserFullController;
 import com.project.usermanager.controller.impl.UserFullControllerImpl;
 import com.project.usermanager.dto.response.UserFullResponseDTO;
+import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.NotFoundException;
 import com.project.usermanager.mapper.CarMapper;
 import com.project.usermanager.mapper.UserFullMapper;
@@ -34,6 +35,7 @@ import com.project.usermanager.service.CarService;
 import com.project.usermanager.service.UserRegistryService;
 import com.project.usermanager.service.impl.CarServiceImpl;
 import com.project.usermanager.service.impl.UserRegistryServiceImpl;
+import com.project.usermanager.util.PasswordUtil;
 
 @ExtendWith(MockitoExtension.class)
 class UserFullTest {
@@ -85,7 +87,7 @@ class UserFullTest {
 
         UserEntity user = UserEntity.builder()
             .birthDate(LocalDate.now())
-            .password("passwd")
+            .password(PasswordUtil.encryptPassword("passwd"))
             .email("email@email.it")
             .username("username")
             .gender("M")
@@ -115,6 +117,17 @@ class UserFullTest {
         when(userRepository.findByUsername(anyString())).thenReturn(optionalUserRegistry);
         ResponseEntity<UserFullResponseDTO> result = controller.findUser("username");
         assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void deleteUserAndCars() throws NotFoundException, BadRequestException {
+
+        when(carRepository.findAllByOwnerUsername(anyString())).thenReturn(carsList);
+        when(userRepository.findByUsername(anyString())).thenReturn(optionalUserRegistry);
+        when(userRepository.findByUsernameAndPassword(anyString(), anyString())).thenReturn(optionalUserRegistry);
+        ResponseEntity<String> result = controller.deleteUserAndCars("username", "passwd");
+        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
+
     }
     
 }
