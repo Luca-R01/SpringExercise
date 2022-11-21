@@ -57,7 +57,7 @@ public class CarControllerImpl implements CarController {
     public ResponseEntity<List<CarResponseDTO>> findAll(String ownerUsername) throws NotFoundException {
 
         if (ownerUsername == null) {
-            logger.info("findAll - IN: ownerUsername(NULL) ");
+            logger.info("findAll - IN: None ");
 
             List<CarResponseDTO> responseDTO = serviceComponent.findAll();
             ResponseEntity<List<CarResponseDTO>> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
