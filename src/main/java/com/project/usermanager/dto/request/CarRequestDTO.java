@@ -1,4 +1,4 @@
-package com.project.usermanager.dto.request.car;
+package com.project.usermanager.dto.request;
 
 import javax.validation.constraints.NotBlank;
 
@@ -13,7 +13,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CarRequestDTOPost {
+public class CarRequestDTO {
 
     @NotBlank
     @JsonProperty("OWNER_USERNAME")

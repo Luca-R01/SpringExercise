@@ -23,8 +23,7 @@ import com.project.usermanager.component.UserRegistryServiceComponent;
 import com.project.usermanager.component.impl.UserRegistryServiceComponentImpl;
 import com.project.usermanager.controller.UserRegistryController;
 import com.project.usermanager.controller.impl.UserRegistryControllerImpl;
-import com.project.usermanager.dto.request.user.UserRequestDTOPost;
-import com.project.usermanager.dto.request.user.UserRequestDTOPut;
+import com.project.usermanager.dto.request.UserRequestDTO;
 import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
@@ -44,8 +43,7 @@ class UserRegistryTest {
 
     private UserRegistryController controller;
 
-    private UserRequestDTOPost requestDTOPost;
-    private UserRequestDTOPut requestDTOPut;
+    private UserRequestDTO requestDTO;
     private Optional<UserEntity> optionalUser;
     private Optional<UserEntity> emptyOptionalUser;
     private List<UserEntity> usersList;
@@ -57,7 +55,6 @@ class UserRegistryTest {
 
         UserRegistryService service = UserRegistryServiceImpl.builder()
             .repository(repository)
-            .mapper(mapper)
         .build();
 
         UserRegistryServiceComponent serviceComponent = UserRegistryServiceComponentImpl.builder()
@@ -70,7 +67,7 @@ class UserRegistryTest {
         .build();
 
         // Inzialaze Data
-        requestDTOPost = UserRequestDTOPost.builder()
+        requestDTO = UserRequestDTO.builder()
             .birthDate(LocalDate.now())
             .confirmPassword("passwd")
             .password("passwd")
@@ -79,10 +76,6 @@ class UserRegistryTest {
             .gender("M")
             .lastName("lastname")
             .name("name")
-        .build();
-
-        requestDTOPut = UserRequestDTOPut.builder()
-            .name("New Name")
         .build();
 
         UserEntity user = UserEntity.builder()
@@ -109,7 +102,7 @@ class UserRegistryTest {
 
         when(repository.findByUsername(anyString())).thenReturn(emptyOptionalUser);
         when(repository.save(any(UserEntity.class))).thenReturn(optionalUser.get());
-        ResponseEntity<UserRegistryResponseDTO> result = controller.createUserRegistry(requestDTOPost);
+        ResponseEntity<UserRegistryResponseDTO> result = controller.createUserRegistry(requestDTO);
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
 
@@ -118,7 +111,7 @@ class UserRegistryTest {
 
         when(repository.findByUsername(anyString())).thenReturn(optionalUser);
         assertThrows(ConflictException.class, () -> { 
-            controller.createUserRegistry(requestDTOPost);
+            controller.createUserRegistry(requestDTO);
         });
     }
 
@@ -142,7 +135,7 @@ class UserRegistryTest {
     void editUserRegistry() throws BadRequestException, ConflictException, NotFoundException {
 
         when(repository.findByUsername(anyString())).thenReturn(optionalUser);
-        ResponseEntity<String> result = controller.editUserRegistry(requestDTOPut, "username", "passwd");
+        ResponseEntity<String> result = controller.editUserRegistry(requestDTO, "username", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
     

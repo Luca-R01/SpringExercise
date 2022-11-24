@@ -8,12 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.usermanager.dto.request.car.CarRequestDTOPost;
-import com.project.usermanager.dto.request.car.CarRequestDTOPut;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
-import com.project.usermanager.mapper.CarMapper;
 import com.project.usermanager.model.CarEntity;
 import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.CarRepository;
@@ -33,18 +30,15 @@ public class CarServiceImpl implements CarService {
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
-    private final CarMapper mapper;
-
     private static final Logger logger = LoggerFactory.getLogger(CarServiceImpl.class);
 
     @Override
-    public CarEntity createCar(CarRequestDTOPost requestDTO, String ownerPassword) throws BadRequestException, ConflictException, NotFoundException {
+    public CarEntity createCar(CarEntity car, String ownerPassword) throws BadRequestException, ConflictException, NotFoundException {
 
-        logger.info("createCar - IN: {} ", requestDTO.toString());
+        logger.info("createCar - IN: {} ", car.toString());
 
         // Control if Car already exists
-        Optional<CarEntity> findCar = repository.findByLicensePlate(requestDTO.getLicensePlate());
+        Optional<CarEntity> findCar = repository.findByLicensePlate(car.getLicensePlate());
         if (findCar.isPresent()) {
 
             logger.info("createCar - OUT: ConflictException(Car alredy exists!) ");
@@ -52,7 +46,7 @@ public class CarServiceImpl implements CarService {
         }
 
         // Control if input User exists
-        Optional<UserEntity> owner = userRepository.findByUsername(requestDTO.getOwnerUsername());
+        Optional<UserEntity> owner = userRepository.findByUsername(car.getOwnerUsername());
         if (owner.isEmpty()) {
 
             logger.info("createCar - OUT: NotFoundException(User not found!) ");
@@ -70,7 +64,6 @@ public class CarServiceImpl implements CarService {
         }
 
         // Create
-        CarEntity car = mapper.toEntity(requestDTO);
         car = repository.save(car);
 
         logger.info("createCar - OUT: {} ", car.toString());
@@ -115,24 +108,32 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void editCar(CarRequestDTOPut requestDTO, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException, ConflictException {
+    public void editCar(CarEntity newCar, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException, ConflictException {
 
-        logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
+        logger.info("editCar - IN: {}, licensePlate({}) ", newCar.toString(), licensePlate);
         
         // Find Car
         CarEntity car = this.findCar(licensePlate);
 
-        // Control if LicensePlate in DTO Not Exists
-        if (requestDTO.getLicensePlate() != null) {
+        // Control if LicensePlate in NewCar Not Exists
+        if (! car.getLicensePlate().equals(newCar.getLicensePlate())) {
 
-            if (! requestDTO.getLicensePlate().equals(car.getLicensePlate())) {
+            Optional<CarEntity> check = repository.findByLicensePlate(newCar.getLicensePlate());
+            if (check.isPresent()) {
 
-                Optional<CarEntity> check = repository.findByLicensePlate(requestDTO.getLicensePlate());
-                if (check.isPresent()) {
+                logger.info("editCar - OUT: ConflictException(Car with input LicensePlate alredy Exists!) ");
+                throw new ConflictException("Car with input LicensePlate alredy Exists!");
+            }
+        }
 
-                    logger.info("editCar - OUT: ConflictException(Car with input LicensePlate alredy Exists!) ");
-                    throw new ConflictException("Car with input LicensePlate alredy Exists!");
-                }
+        // Control if Owner Username in NewCar Exists
+        if (! car.getOwnerUsername().equals(newCar.getOwnerUsername())) {
+
+            Optional<UserEntity> check = userRepository.findByUsername(newCar.getOwnerUsername());
+            if (check.isEmpty()) {
+
+                logger.info("editCar - OUT: NotFoundException(Username not found!) ");
+                throw new NotFoundException("Username not found!");
             }
         }
 
@@ -148,10 +149,10 @@ public class CarServiceImpl implements CarService {
         }
 
         // Edit Car
-        CarEntity editCar = mapper.editCar(requestDTO, car);
-        repository.save(editCar);
+        newCar.setId(car.getId());
+        repository.save(newCar);
 
-        logger.info("editCar - OUT: {} ", editCar.toString());
+        logger.info("editCar - OUT: {} ", newCar.toString());
     }
 
     @Override
@@ -175,6 +176,8 @@ public class CarServiceImpl implements CarService {
 
         // Delete
         repository.delete(car);
+
+        logger.info("deleteCar - OUT: {} ", car.toString());
     }
 
     @Override

@@ -7,8 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.project.usermanager.dto.request.car.CarRequestDTOPost;
-import com.project.usermanager.dto.request.car.CarRequestDTOPut;
+import com.project.usermanager.dto.request.CarRequestDTO;
 import com.project.usermanager.dto.response.CarResponseDTO;
 import com.project.usermanager.model.CarEntity;
 
@@ -20,7 +19,7 @@ public class CarMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(CarMapper.class);
 
-    public CarEntity toEntity(CarRequestDTOPost requestDTO) {
+    public CarEntity toEntity(CarRequestDTO requestDTO) {
 
         logger.info("toEntity - IN: {} ", requestDTO.toString());
 
@@ -63,27 +62,6 @@ public class CarMapper {
 
         logger.info("toDTOList - OUT: {} ", responseDTOList.toString());
         return responseDTOList;
-    }
-
-    public CarEntity editCar(CarRequestDTOPut requestDTO, CarEntity car) {
-
-        logger.info("editCar - IN: {}, {} ", requestDTO.toString(), car.toString());
-
-        if (requestDTO.getBrand() != null) {
-            car.setBrand(requestDTO.getBrand());
-        }
-        if (requestDTO.getLicensePlate() != null) {
-            car.setLicensePlate(requestDTO.getLicensePlate());
-        }
-        if (requestDTO.getModel() != null){
-            car.setModel(requestDTO.getModel());
-        }
-        if (requestDTO.getOwnerUsername() != null) {
-            car.setOwnerUsername(requestDTO.getOwnerUsername());
-        }
-      
-        logger.info("editCar - OUT: {} ", car.toString());
-        return car;
     }
     
 }

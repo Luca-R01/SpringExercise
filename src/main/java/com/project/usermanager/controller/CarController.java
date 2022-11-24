@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.project.usermanager.dto.request.car.CarRequestDTOPost;
-import com.project.usermanager.dto.request.car.CarRequestDTOPut;
+import com.project.usermanager.dto.request.CarRequestDTO;
 import com.project.usermanager.dto.response.CarResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
@@ -27,7 +26,7 @@ public interface CarController {
     @PostMapping("/api/car/owner/{password}")
     @ResponseStatus(code = HttpStatus.CREATED, value = HttpStatus.CREATED)
     ResponseEntity<CarResponseDTO> createCar (
-        @RequestBody @Valid CarRequestDTOPost requestDTO,
+        @RequestBody @Valid CarRequestDTO requestDTO,
         @PathVariable String password
     ) throws BadRequestException, ConflictException, NotFoundException;
 
@@ -46,7 +45,7 @@ public interface CarController {
     @PutMapping("/api/car/{licensePlate}/owner/{password}")
     @ResponseStatus(code = HttpStatus.CONTINUE, value = HttpStatus.CONTINUE)
     ResponseEntity<String> editCar (
-        @RequestBody @Valid CarRequestDTOPut requestDTO, 
+        @RequestBody @Valid CarRequestDTO requestDTO, 
         @PathVariable String licensePlate,
         @PathVariable String password
     ) throws BadRequestException, NotFoundException, ConflictException;

@@ -9,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.project.usermanager.dto.request.user.UserRequestDTOPost;
-import com.project.usermanager.dto.request.user.UserRequestDTOPut;
+import com.project.usermanager.dto.request.UserRequestDTO;
 import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.model.UserEntity;
@@ -24,7 +23,7 @@ public class UserMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(UserMapper.class);
 
-    public UserEntity toEntity(UserRequestDTOPost requestDTO) throws BadRequestException {
+    public UserEntity toEntity(UserRequestDTO requestDTO) throws BadRequestException {
 
         logger.info("toEntity - IN: {} ", requestDTO.toString());
 
@@ -83,43 +82,5 @@ public class UserMapper {
         return responseDTOList;
     }
 
-    public UserEntity editUser(UserRequestDTOPut requestDTO, UserEntity user) throws BadRequestException {
-
-        logger.info("editUser - IN: {}, {} ", requestDTO.toString(), user.toString());
-
-        if (requestDTO.getBirthDate() != null) {
-            user.setBirthDate(requestDTO.getBirthDate());
-        }
-        if (requestDTO.getEmail() != null) {
-            user.setEmail(requestDTO.getEmail());
-        }
-        if (requestDTO.getUsername() != null) {
-            user.setUsername(requestDTO.getUsername());
-        }
-        if (requestDTO.getUsername() != null) {
-            user.setUsername(requestDTO.getUsername());
-        }
-        if (requestDTO.getGender() != null) {
-            user.setGender(requestDTO.getGender());
-        }
-        if (requestDTO.getLastName() != null) {
-            user.setLastName(requestDTO.getLastName());
-        }
-        if (requestDTO.getName() != null) {
-            user.setName(requestDTO.getName());
-        }
-        if (requestDTO.getPassword() != null && requestDTO.getConfirmPassword() != null) {
-            // Password control
-            if (!requestDTO.getPassword().equals(requestDTO.getConfirmPassword())) {
-
-                logger.info("editUser - OUT: BadRequestException(The passwords entered are not the same!) ");
-                throw new BadRequestException("The passwords entered are not the same!");
-            }
-            user.setPassword(PasswordUtil.encryptPassword(requestDTO.getPassword()));
-        }
-
-        logger.info("editUser - OUT: {} ", user.toString());
-        return user;
-    }
     
 }

@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.project.usermanager.component.CarServiceComponent;
-import com.project.usermanager.dto.request.car.CarRequestDTOPost;
-import com.project.usermanager.dto.request.car.CarRequestDTOPut;
+import com.project.usermanager.dto.request.CarRequestDTO;
 import com.project.usermanager.dto.response.CarResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
@@ -33,12 +32,13 @@ public class CarServiceComponentImpl implements CarServiceComponent {
     private static final Logger logger = LoggerFactory.getLogger(CarServiceComponentImpl.class);
 
     @Override
-    public CarResponseDTO createCar(CarRequestDTOPost requestDTO, String ownerPassword) throws BadRequestException, ConflictException, NotFoundException {
+    public CarResponseDTO createCar(CarRequestDTO requestDTO, String ownerPassword) throws BadRequestException, ConflictException, NotFoundException {
 
         logger.info("createCar - IN: {} ", requestDTO.toString());
 
-        CarEntity car = service.createCar(requestDTO, ownerPassword);
-        CarResponseDTO response = mapper.toDTO(car);
+        CarEntity car = mapper.toEntity(requestDTO);
+        CarEntity createdCar = service.createCar(car, ownerPassword);
+        CarResponseDTO response = mapper.toDTO(createdCar);
 
         logger.info("createCar - OUT: {} ", response.toString());
         return response;
@@ -69,11 +69,12 @@ public class CarServiceComponentImpl implements CarServiceComponent {
     }
 
     @Override
-    public void editCar(CarRequestDTOPut requestDTO, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException, ConflictException {
+    public void editCar(CarRequestDTO requestDTO, String licensePlate, String ownerPassword) throws BadRequestException, NotFoundException, ConflictException {
         
         logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
 
-        service.editCar(requestDTO, licensePlate, ownerPassword);
+        CarEntity newCar = mapper.toEntity(requestDTO);
+        service.editCar(newCar, licensePlate, ownerPassword);
 
         logger.info("editCar - OUT: OK");
     }

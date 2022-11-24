@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.project.usermanager.dto.request.user.UserRequestDTOPost;
-import com.project.usermanager.dto.request.user.UserRequestDTOPut;
+import com.project.usermanager.dto.request.UserRequestDTO;
 import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
@@ -25,7 +24,7 @@ public interface UserRegistryController {
     @PostMapping("/api/user/registry")
     @ResponseStatus(code = HttpStatus.CREATED, value = HttpStatus.CREATED)
     ResponseEntity<UserRegistryResponseDTO> createUserRegistry (
-        @RequestBody @Valid UserRequestDTOPost requestDTO
+        @RequestBody @Valid UserRequestDTO requestDTO
     ) throws BadRequestException, ConflictException;
 
     @GetMapping("/api/user/registry/{username}")
@@ -37,7 +36,7 @@ public interface UserRegistryController {
     @PutMapping("/api/user/registry/{username}/{password}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT, value = HttpStatus.NO_CONTENT)
     ResponseEntity<String> editUserRegistry (
-        @RequestBody @Valid UserRequestDTOPut requestDTO, 
+        @RequestBody @Valid UserRequestDTO requestDTO, 
         @PathVariable String username,
         @PathVariable String password
     ) throws BadRequestException, NotFoundException, ConflictException;

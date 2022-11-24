@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.usermanager.component.CarServiceComponent;
 import com.project.usermanager.controller.CarController;
-import com.project.usermanager.dto.request.car.CarRequestDTOPost;
-import com.project.usermanager.dto.request.car.CarRequestDTOPut;
+import com.project.usermanager.dto.request.CarRequestDTO;
 import com.project.usermanager.dto.response.CarResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
@@ -30,7 +29,7 @@ public class CarControllerImpl implements CarController {
     private static final Logger logger = LoggerFactory.getLogger(CarControllerImpl.class);
 
     @Override
-    public ResponseEntity<CarResponseDTO> createCar(CarRequestDTOPost requestDTO, String password) throws BadRequestException, ConflictException, NotFoundException {
+    public ResponseEntity<CarResponseDTO> createCar(CarRequestDTO requestDTO, String password) throws BadRequestException, ConflictException, NotFoundException {
         
         logger.info("createCar - IN: {} ", requestDTO.toString());
 
@@ -77,7 +76,7 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    public ResponseEntity<String> editCar(CarRequestDTOPut requestDTO, String licensePlate, String password) throws BadRequestException, NotFoundException, ConflictException {
+    public ResponseEntity<String> editCar(CarRequestDTO requestDTO, String licensePlate, String password) throws BadRequestException, NotFoundException, ConflictException {
         
         logger.info("editCar - IN: {}, licensePlate({}) ", requestDTO.toString(), licensePlate);
 

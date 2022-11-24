@@ -23,8 +23,7 @@ import com.project.usermanager.component.CarServiceComponent;
 import com.project.usermanager.component.impl.CarServiceComponentImpl;
 import com.project.usermanager.controller.CarController;
 import com.project.usermanager.controller.impl.CarControllerImpl;
-import com.project.usermanager.dto.request.car.CarRequestDTOPost;
-import com.project.usermanager.dto.request.car.CarRequestDTOPut;
+import com.project.usermanager.dto.request.CarRequestDTO;
 import com.project.usermanager.dto.response.CarResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
@@ -49,8 +48,7 @@ class CarTest {
 
     private CarController controller;
 
-    private CarRequestDTOPost requestDTOPost;
-    private CarRequestDTOPut requestDTOPut;
+    private CarRequestDTO requestDTO;
     private Optional<CarEntity> optionalCar;
     private Optional<CarEntity> emptyOptionalCar;
     private Optional<UserEntity> ownerOptional;
@@ -63,7 +61,6 @@ class CarTest {
         CarMapper mapper = CarMapper.builder().build();
 
         CarService service = CarServiceImpl.builder()
-            .mapper(mapper)
             .repository(repository)
             .userRepository(userRepository)
         .build();
@@ -78,15 +75,11 @@ class CarTest {
         .build();
 
         // Inzialaze Data
-        requestDTOPost = CarRequestDTOPost.builder()
+        requestDTO = CarRequestDTO.builder()
             .brand("brand")
             .licensePlate("licenseplate")
             .model("mode")
             .ownerUsername("username")
-        .build();
-
-        requestDTOPut = CarRequestDTOPut.builder()
-            .brand("brand")
         .build();
 
         CarEntity car = CarEntity.builder()
@@ -126,7 +119,7 @@ class CarTest {
         when(userRepository.findByUsername(anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
         when(repository.save(any(CarEntity.class))).thenReturn(optionalCar.get());
-        ResponseEntity<CarResponseDTO> result = controller.createCar(requestDTOPost, "passwd");
+        ResponseEntity<CarResponseDTO> result = controller.createCar(requestDTO, "passwd");
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
 
@@ -135,7 +128,7 @@ class CarTest {
 
         when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
         assertThrows(ConflictException.class, () -> { 
-            controller.createCar(requestDTOPost, "passwd");
+            controller.createCar(requestDTO, "passwd");
         });
     }
 
@@ -145,7 +138,7 @@ class CarTest {
         when(userRepository.findByUsername(anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
         assertThrows(BadRequestException.class, () -> {
-            controller.createCar(requestDTOPost, "wrongPassword");
+            controller.createCar(requestDTO, "wrongPassword");
         });
     }
 
@@ -155,7 +148,7 @@ class CarTest {
         when(userRepository.findByUsername(anyString())).thenReturn(emptyOwnerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
         assertThrows(NotFoundException.class, () -> {
-            controller.createCar(requestDTOPost, "passwd");
+            controller.createCar(requestDTO, "passwd");
         });
     }
 
@@ -189,7 +182,7 @@ class CarTest {
 
         when(userRepository.findByUsernameAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
         when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
-        ResponseEntity<String> result = controller.editCar(requestDTOPut, "licenseplate", "passwd");
+        ResponseEntity<String> result = controller.editCar(requestDTO, "licenseplate", "passwd");
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 

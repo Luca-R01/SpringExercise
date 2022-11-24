@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.usermanager.component.UserRegistryServiceComponent;
 import com.project.usermanager.controller.UserRegistryController;
-import com.project.usermanager.dto.request.user.UserRequestDTOPost;
-import com.project.usermanager.dto.request.user.UserRequestDTOPut;
+import com.project.usermanager.dto.request.UserRequestDTO;
 import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
@@ -29,7 +28,7 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     private static final Logger logger = LoggerFactory.getLogger(UserRegistryControllerImpl.class);
 
     @Override
-    public ResponseEntity<UserRegistryResponseDTO> createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
+    public ResponseEntity<UserRegistryResponseDTO> createUserRegistry(UserRequestDTO requestDTO) throws BadRequestException, ConflictException {
 
         logger.info("createUser - IN: {} ", requestDTO.toString());
 
@@ -53,7 +52,7 @@ public class UserRegistryControllerImpl implements UserRegistryController {
     }
 
     @Override
-    public ResponseEntity<String> editUserRegistry(UserRequestDTOPut requestDTO, String username, String password) throws BadRequestException, NotFoundException, ConflictException {
+    public ResponseEntity<String> editUserRegistry(UserRequestDTO requestDTO, String username, String password) throws BadRequestException, NotFoundException, ConflictException {
         
         logger.info("editUser - IN: {}, username({}) ", requestDTO.toString(), username);
 

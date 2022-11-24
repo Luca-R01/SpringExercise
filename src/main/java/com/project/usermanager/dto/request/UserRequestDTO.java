@@ -1,4 +1,4 @@
-package com.project.usermanager.dto.request.user;
+package com.project.usermanager.dto.request;
 
 import java.time.LocalDate;
 
@@ -18,7 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserRequestDTOPost {
+public class UserRequestDTO {
 
     @NotBlank
     @JsonProperty("USERNAME")

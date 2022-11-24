@@ -65,12 +65,10 @@ class UserFullTest {
         CarService carService = CarServiceImpl.builder()
             .repository(carRepository)
             .userRepository(userRepository)
-            .mapper(carMapper)
         .build();
 
         UserRegistryService userRegistryService = UserRegistryServiceImpl.builder()
             .repository(userRepository)
-            .mapper(userMapper)
         .build();
 
         UserFullServiceComponent serviceComponent = UserFullServiceComponentImpl.builder()

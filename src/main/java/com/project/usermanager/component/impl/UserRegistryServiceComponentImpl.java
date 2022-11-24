@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.project.usermanager.component.UserRegistryServiceComponent;
-import com.project.usermanager.dto.request.user.UserRequestDTOPost;
-import com.project.usermanager.dto.request.user.UserRequestDTOPut;
+import com.project.usermanager.dto.request.UserRequestDTO;
 import com.project.usermanager.dto.response.UserRegistryResponseDTO;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
@@ -33,12 +32,13 @@ public class UserRegistryServiceComponentImpl implements UserRegistryServiceComp
     private static final Logger logger = LoggerFactory.getLogger(UserRegistryServiceComponentImpl.class);
 
     @Override
-    public UserRegistryResponseDTO createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
+    public UserRegistryResponseDTO createUserRegistry(UserRequestDTO requestDTO) throws BadRequestException, ConflictException {
         
         logger.info("createUser - IN: {} ", requestDTO.toString());
 
-        UserEntity user = service.createUserRegistry(requestDTO);
-        UserRegistryResponseDTO response = mapper.toDTO(user);
+        UserEntity user = mapper.toEntity(requestDTO);
+        UserEntity createdUser = service.createUserRegistry(user);
+        UserRegistryResponseDTO response = mapper.toDTO(createdUser);
 
         logger.info("createUser - OUT: {} ", response.toString());
         return response;
@@ -57,11 +57,12 @@ public class UserRegistryServiceComponentImpl implements UserRegistryServiceComp
     }
 
     @Override
-    public void editUserRegistry(UserRequestDTOPut requestDTO, String username, String password) throws BadRequestException, NotFoundException, ConflictException {
+    public void editUserRegistry(UserRequestDTO requestDTO, String username, String password) throws BadRequestException, NotFoundException, ConflictException {
         
         logger.info("editUser - IN: {}, username({}) ", requestDTO.toString(), username);
 
-        service.editUserRegistry(requestDTO, username, password);
+        UserEntity newUser = mapper.toEntity(requestDTO);
+        service.editUserRegistry(newUser, username, password);
         
         logger.info("editUser - OUT: OK "); 
     }

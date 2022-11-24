@@ -8,12 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.usermanager.dto.request.user.UserRequestDTOPost;
-import com.project.usermanager.dto.request.user.UserRequestDTOPut;
 import com.project.usermanager.exception.BadRequestException;
 import com.project.usermanager.exception.ConflictException;
 import com.project.usermanager.exception.NotFoundException;
-import com.project.usermanager.mapper.UserMapper;
 import com.project.usermanager.model.UserEntity;
 import com.project.usermanager.repository.UserRepository;
 import com.project.usermanager.service.UserRegistryService;
@@ -28,18 +25,15 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     @Autowired
     private final UserRepository repository;
 
-    @Autowired
-    private final UserMapper mapper;
-
     private static final Logger logger = LoggerFactory.getLogger(UserRegistryServiceImpl.class);
 
     @Override
-    public UserEntity createUserRegistry(UserRequestDTOPost requestDTO) throws BadRequestException, ConflictException {
+    public UserEntity createUserRegistry(UserEntity user) throws BadRequestException, ConflictException {
 
-        logger.info("createUser - IN: {} ", requestDTO.toString());
+        logger.info("createUser - IN: {} ", user.toString());
 
         // Control if User already exists
-        Optional<UserEntity> findUser = repository.findByUsername(requestDTO.getUsername());
+        Optional<UserEntity> findUser = repository.findByUsername(user.getUsername());
         if (findUser.isPresent()) {
 
             logger.info("createUser - OUT: ConflictException(User alredy exixts!) ");
@@ -47,7 +41,6 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         }
 
         // Create User
-        UserEntity user = mapper.toEntity(requestDTO);
         user = repository.save(user);
 
         logger.info("createUser - OUT: {} ", user.toString());
@@ -71,24 +64,21 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     }
 
     @Override
-    public void editUserRegistry(UserRequestDTOPut requestDTO, String username, String password) throws BadRequestException, NotFoundException, ConflictException {
+    public void editUserRegistry(UserEntity newUser, String username, String password) throws BadRequestException, NotFoundException, ConflictException {
 
-        logger.info("editUser - IN: {}, username({}) ", requestDTO.toString(), username);
+        logger.info("editUser - IN: {}, username({}) ", newUser.toString(), username);
 
         // Control if User with input Username exists
         UserEntity user = this.findUserRegistry(username);
 
         // Control if Username in DTO Not Exists
-        if (requestDTO.getUsername() != null) {
+        if (! newUser.getUsername().equals(user.getUsername())) {
 
-            if (! requestDTO.getUsername().equals(user.getUsername())) {
+            Optional<UserEntity> check = repository.findByUsername(user.getUsername());
+            if (check.isPresent()) {
 
-                Optional<UserEntity> check = repository.findByUsername(requestDTO.getUsername());
-                if (check.isPresent()) {
-
-                    logger.info("editUser - OUT: ConflictException(User with input Username alredy Exists!) ");
-                    throw new ConflictException("User with input Username alredy Exists!");
-                }
+                logger.info("editUser - OUT: ConflictException(User with input Username alredy Exists!) ");
+                throw new ConflictException("User with input Username alredy Exists!");
             }
         }
         
@@ -103,10 +93,10 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         }
 
         // Edit User
-        UserEntity editUser = mapper.editUser(requestDTO, user);
-        repository.save(editUser);
+        newUser.setId(user.getId());
+        repository.save(newUser);
 
-        logger.info("editUser - OUT: {} ", editUser.toString());  
+        logger.info("editUser - OUT: {} ", newUser.toString());  
     }
 
     @Override
