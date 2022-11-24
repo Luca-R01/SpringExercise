@@ -92,12 +92,12 @@ public class CarServiceComponentImpl implements CarServiceComponent {
     @Override
     public List<CarResponseDTO> findAll() {
 
-        logger.info("deleteCar - IN: NONE ");
+        logger.info("findAll - IN: NONE ");
         
         List<CarEntity> carList = service.findAll();
         List<CarResponseDTO> response = mapper.toDTOList(carList);
 
-        logger.info("deleteCar - OUT: {} ", response.toString());
+        logger.info("findAll - OUT: {} ", response.toString());
         return response;
     }
     
