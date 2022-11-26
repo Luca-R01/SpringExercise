@@ -48,16 +48,15 @@ class CarTest {
 
     private CarController controller;
 
+    // Data
     private CarRequestDTO requestDTO;
-    private Optional<CarEntity> optionalCar;
-    private Optional<CarEntity> emptyOptionalCar;
-    private Optional<UserEntity> ownerOptional;
-    private Optional<UserEntity> emptyOwnerOptional;
-    private List<CarEntity> carsList;
+    private CarEntity car;
+    private UserEntity user;
 
     @BeforeEach
     void setup() throws BadRequestException {
 
+        // Inizialize Beans
         CarMapper mapper = CarMapper.builder().build();
 
         CarService service = CarServiceImpl.builder()
@@ -74,7 +73,7 @@ class CarTest {
             .serviceComponent(serviceComponent)
         .build();
 
-        // Inzialaze Data
+        // Inzialize Data
         requestDTO = CarRequestDTO.builder()
             .brand("brand")
             .licensePlate("licenseplate")
@@ -82,7 +81,7 @@ class CarTest {
             .ownerUsername("username")
         .build();
 
-        CarEntity car = CarEntity.builder()
+        car = CarEntity.builder()
             .brand("brand")
             .licensePlate("licenseplate")
             .model("mode")
@@ -90,13 +89,7 @@ class CarTest {
             .id(new ObjectId())
         .build();
 
-        optionalCar = Optional.of(car);
-
-        emptyOptionalCar = Optional.empty();
-
-        carsList = List.of(car);
-
-        UserEntity user = UserEntity.builder()
+        user = UserEntity.builder()
             .birthDate(LocalDate.now())
             .password(PasswordUtil.encryptPassword("passwd"))
             .email("email@email.it")
@@ -107,26 +100,27 @@ class CarTest {
             .id(new ObjectId())
         .build();
 
-        ownerOptional = Optional.of(user);
-
-        emptyOwnerOptional = Optional.empty();
-
     }
 
     @Test
     void createCar() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(userRepository.findByUsername(anyString())).thenReturn(ownerOptional);
-        when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
-        when(repository.save(any(CarEntity.class))).thenReturn(optionalCar.get());
+        // When
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        when(repository.findByLicensePlate(anyString())).thenReturn(Optional.empty());
+        when(repository.save(any(CarEntity.class))).thenReturn(car);
+        // Then
         ResponseEntity<CarResponseDTO> result = controller.createCar(requestDTO, "passwd");
+        // Assert
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
 
     @Test
     void createCarWithConflictException() throws BadRequestException, ConflictException {
 
-        when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
+        // When
+        when(repository.findByLicensePlate(anyString())).thenReturn(Optional.of(car));
+        // Then Assert
         assertThrows(ConflictException.class, () -> { 
             controller.createCar(requestDTO, "passwd");
         });
@@ -135,8 +129,10 @@ class CarTest {
     @Test
     void createCarWithWrongPassword() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(userRepository.findByUsername(anyString())).thenReturn(ownerOptional);
-        when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
+        // When
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        when(repository.findByLicensePlate(anyString())).thenReturn(Optional.empty());
+        // Then Assert
         assertThrows(BadRequestException.class, () -> {
             controller.createCar(requestDTO, "wrongPassword");
         });
@@ -145,8 +141,10 @@ class CarTest {
     @Test
     void createCarWithNoOwner() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(userRepository.findByUsername(anyString())).thenReturn(emptyOwnerOptional);
-        when(repository.findByLicensePlate(anyString())).thenReturn(emptyOptionalCar);
+        // When
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+        when(repository.findByLicensePlate(anyString())).thenReturn(Optional.empty());
+        // Then Assert
         assertThrows(NotFoundException.class, () -> {
             controller.createCar(requestDTO, "passwd");
         });
@@ -155,43 +153,58 @@ class CarTest {
     @Test
     void findCar() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
+        // When
+        when(repository.findByLicensePlate(anyString())).thenReturn(Optional.of(car));
+        // Then
         ResponseEntity<CarResponseDTO> result = controller.findCar("licenseplate");
+        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
     void findAll() throws NotFoundException {
 
-        when(repository.findAll()).thenReturn(carsList);
+        // When
+        when(repository.findAll()).thenReturn(List.of(car));
+        // Then
         ResponseEntity<List<CarResponseDTO>> result = controller.findAll(null);
+        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
     void findAllByOwner() throws NotFoundException {
 
-        when(userRepository.findByUsername(anyString())).thenReturn(ownerOptional);
-        when(repository.findAllByOwnerUsername(anyString())).thenReturn(carsList);
+        // When
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        when(repository.findAllByOwnerUsername(anyString())).thenReturn(List.of(car));
+        // Then
         ResponseEntity<List<CarResponseDTO>> result = controller.findAll("username");
+        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
     void editCar() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(userRepository.findByUsernameAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
-        when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
+        // When
+        when(userRepository.findByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.of(user));
+        when(repository.findByLicensePlate(anyString())).thenReturn(Optional.of(car));
+        // Then
         ResponseEntity<String> result = controller.editCar(requestDTO, "licenseplate", "passwd");
+        // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
 
     @Test 
     void deleteCar() throws NotFoundException, BadRequestException {
 
-        when(userRepository.findByUsernameAndPassword(anyString(), anyString())).thenReturn(ownerOptional);
-        when(repository.findByLicensePlate(anyString())).thenReturn(optionalCar);
+        // When
+        when(userRepository.findByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.of(user));
+        when(repository.findByLicensePlate(anyString())).thenReturn(Optional.of(car));
+        // Then
         ResponseEntity<String> result = controller.deleteCar("licenseplate", "passwd");
+        // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
     }
     

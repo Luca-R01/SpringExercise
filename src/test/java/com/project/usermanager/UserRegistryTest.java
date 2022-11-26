@@ -43,14 +43,14 @@ class UserRegistryTest {
 
     private UserRegistryController controller;
 
+    // Data
     private UserRequestDTO requestDTO;
-    private Optional<UserEntity> optionalUser;
-    private Optional<UserEntity> emptyOptionalUser;
-    private List<UserEntity> usersList;
+    private UserEntity user;
 
     @BeforeEach
     void setup() throws BadRequestException {
 
+        // Inizialize Beans
         UserMapper mapper = UserMapper.builder().build();
 
         UserRegistryService service = UserRegistryServiceImpl.builder()
@@ -66,7 +66,7 @@ class UserRegistryTest {
             .serviceComponent(serviceComponent)
         .build();
 
-        // Inzialaze Data
+        // Inzialize Data
         requestDTO = UserRequestDTO.builder()
             .birthDate(LocalDate.now())
             .confirmPassword("passwd")
@@ -78,7 +78,7 @@ class UserRegistryTest {
             .name("name")
         .build();
 
-        UserEntity user = UserEntity.builder()
+        user = UserEntity.builder()
             .birthDate(LocalDate.now())
             .password(PasswordUtil.encryptPassword("passwd"))
             .email("email@email.it")
@@ -89,27 +89,26 @@ class UserRegistryTest {
             .id(new ObjectId())
         .build();
 
-        optionalUser = Optional.of(user);
-
-        emptyOptionalUser = Optional.empty();
-
-        usersList = List.of(user);
-
     }
 
     @Test
     void createUserRegistry() throws BadRequestException, ConflictException {
 
-        when(repository.findByUsername(anyString())).thenReturn(emptyOptionalUser);
-        when(repository.save(any(UserEntity.class))).thenReturn(optionalUser.get());
+        // When
+        when(repository.findByUsername(anyString())).thenReturn(Optional.empty());
+        when(repository.save(any(UserEntity.class))).thenReturn(user);
+        // Then
         ResponseEntity<UserRegistryResponseDTO> result = controller.createUserRegistry(requestDTO);
+        // Assert
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
 
     @Test
     void createUserRegistryWithConflictException() throws BadRequestException, ConflictException {
 
-        when(repository.findByUsername(anyString())).thenReturn(optionalUser);
+        // When
+        when(repository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        // Then Assert
         assertThrows(ConflictException.class, () -> { 
             controller.createUserRegistry(requestDTO);
         });
@@ -118,25 +117,67 @@ class UserRegistryTest {
     @Test
     void findUserRegistry() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(repository.findByUsername(anyString())).thenReturn(optionalUser);
+        // When
+        when(repository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        // Then
         ResponseEntity<UserRegistryResponseDTO> result = controller.findUserRegistry("username");
+        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void findUserRegistryWithNotFoundException() throws BadRequestException, ConflictException, NotFoundException {
+
+        // When
+        when(repository.findByUsername(anyString())).thenReturn(Optional.empty());
+        // Then Assert
+        assertThrows(NotFoundException.class, () -> {
+            controller.findUserRegistry("username");
+        });
     }
 
     @Test
     void findAll() {
 
-        when(repository.findAll()).thenReturn(usersList);
+        // When
+        when(repository.findAll()).thenReturn(List.of(user));
+        // Then
         ResponseEntity<List<UserRegistryResponseDTO>> result = controller.findAllUserRegistry();
+        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
     @Test
     void editUserRegistry() throws BadRequestException, ConflictException, NotFoundException {
 
-        when(repository.findByUsername(anyString())).thenReturn(optionalUser);
+        // When
+        when(repository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        // Then
         ResponseEntity<String> result = controller.editUserRegistry(requestDTO, "username", "passwd");
+        // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
+    }
+
+    @Test
+    void editUserRegistryWithNotFoundException() throws BadRequestException, ConflictException, NotFoundException {
+
+        // When
+        when(repository.findByUsername(anyString())).thenReturn(Optional.empty());
+        // Then Assert
+        assertThrows(NotFoundException.class, () -> {
+            controller.editUserRegistry(requestDTO, "username", "passwd");
+        });
+    }
+
+    @Test
+    void editUserRegistryWithWrongPassword() throws BadRequestException, ConflictException, NotFoundException {
+
+        // When
+        when(repository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        // Then Assert
+        assertThrows(BadRequestException.class, () -> {
+            controller.editUserRegistry(requestDTO, "username", "wrong");
+        });
     }
     
 }

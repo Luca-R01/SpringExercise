@@ -1,5 +1,7 @@
 package com.project.usermanager.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +20,12 @@ public interface UserFullController {
     ResponseEntity<UserFullResponseDTO> findUser (
         @PathVariable String username
     ) throws NotFoundException;
+
+
+    @GetMapping("/api/user")
+    @ResponseStatus(code = HttpStatus.OK, value = HttpStatus.OK)
+    ResponseEntity<List<UserFullResponseDTO>> findAllUser () throws NotFoundException;
+
 
     @DeleteMapping("/api/user/{username}/{password}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT, value = HttpStatus.NO_CONTENT)

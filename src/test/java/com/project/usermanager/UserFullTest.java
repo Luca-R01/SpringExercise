@@ -48,12 +48,14 @@ class UserFullTest {
 
     private UserFullController controller;
 
-    private Optional<UserEntity> optionalUserRegistry;
+    // Data
+    private UserEntity user;
     private List<CarEntity> carsList;
 
     @BeforeEach
     void setup() {
 
+        // Inizialize Beans
         UserMapper userMapper = UserMapper.builder().build();
         CarMapper carMapper = CarMapper.builder().build();
 
@@ -82,8 +84,7 @@ class UserFullTest {
         .build();
 
         // Inizialize Data
-
-        UserEntity user = UserEntity.builder()
+        user = UserEntity.builder()
             .birthDate(LocalDate.now())
             .password(PasswordUtil.encryptPassword("passwd"))
             .email("email@email.it")
@@ -93,8 +94,6 @@ class UserFullTest {
             .name("name")
             .id(new ObjectId())
         .build();
-
-        optionalUserRegistry = Optional.of(user);
 
         CarEntity car = CarEntity.builder()
             .brand("brand")
@@ -111,19 +110,39 @@ class UserFullTest {
     @Test
     void findUser() throws NotFoundException {
 
+        // When
         when(carRepository.findAllByOwnerUsername(anyString())).thenReturn(carsList);
-        when(userRepository.findByUsername(anyString())).thenReturn(optionalUserRegistry);
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        // Then
         ResponseEntity<UserFullResponseDTO> result = controller.findUser("username");
+        // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void findAllUser() throws NotFoundException {
+
+        // When
+        when(userRepository.findAll()).thenReturn(List.of(user));
+        when(carRepository.findAllByOwnerUsername(anyString())).thenReturn(carsList);
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        // Then
+        ResponseEntity<List<UserFullResponseDTO>> result = controller.findAllUser();
+        // Assert
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+
     }
 
     @Test
     void deleteUserAndCars() throws NotFoundException, BadRequestException {
 
+        // When
         when(carRepository.findAllByOwnerUsername(anyString())).thenReturn(carsList);
-        when(userRepository.findByUsername(anyString())).thenReturn(optionalUserRegistry);
-        when(userRepository.findByUsernameAndPassword(anyString(), anyString())).thenReturn(optionalUserRegistry);
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndPassword(anyString(), anyString())).thenReturn(Optional.of(user));
+        // Then
         ResponseEntity<String> result = controller.deleteUserAndCars("username", "passwd");
+        // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
 
     }

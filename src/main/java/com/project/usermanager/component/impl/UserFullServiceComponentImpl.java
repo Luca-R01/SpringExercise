@@ -1,5 +1,6 @@
 package com.project.usermanager.component.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -44,6 +45,24 @@ public class UserFullServiceComponentImpl implements UserFullServiceComponent {
         UserFullResponseDTO response = mapper.toDTO(user, carList);
 
         logger.info("findUser - OUT: {} ", response.toString());
+        return response;
+    }
+
+    @Override
+    public List<UserFullResponseDTO> findAllUsers() throws NotFoundException {
+
+        logger.info("findAllUsers - IN: NONE ");
+
+        // Inizialize Response List
+        List<UserFullResponseDTO> response = new ArrayList<>();
+
+        // Find all Users
+        List<UserEntity> userList = userRegistryService.findAllUserRegistry();
+        for (UserEntity user : userList) {
+            response.add(this.findUser(user.getUsername()));
+        }
+
+        logger.info("findAllUsers - OUT: {} ", response.toString());
         return response;
     }
 

@@ -1,5 +1,7 @@
 package com.project.usermanager.controller.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,18 @@ public class UserFullControllerImpl implements UserFullController {
         ResponseEntity<UserFullResponseDTO> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
         logger.info("findUser - OUT: {} ", response.toString());
+        return response;
+    }
+
+    @Override
+    public ResponseEntity<List<UserFullResponseDTO>> findAllUser() throws NotFoundException {
+
+        logger.info("findAllUser - IN: NONE ");
+        
+        List<UserFullResponseDTO> responseDTO = serviceComponent.findAllUsers();
+        ResponseEntity<List<UserFullResponseDTO>> response = new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        logger.info("findAllUser - OUT: {} ", response.toString());
         return response;
     }
 
